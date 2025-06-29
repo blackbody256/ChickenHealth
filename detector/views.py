@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+ 944a970 (Implement Chicken Health Detector application with image upload, analysis, and recommendations)
 from django.contrib import messages
 from django.http import JsonResponse
 from .forms import ImageUploadForm
@@ -20,7 +21,7 @@ def upload_image(request):
             #Perform disease detection
             image_path = analysis.image.path
             predicted_disease, confidence = detector_instance.predict(image_path)
-            
+           
             if predicted_disease:
                 analysis.predicted_disease = predicted_disease
                 analysis.confidence_score = confidence
@@ -44,8 +45,7 @@ def result(request, analysis_id):
         if detector_instance is None:
             # This case is less likely to be hit if the upload worked, but is good for safety
             return render(request, 'result.html', {'analysis': analysis, 'recommendations': {'status': 'Error', 'recommendations': ['Analysis model is offline.']}})
-        recommendations = detector_instance.get_recommendations(analysis.predicted_disease)
-        
+        recommendations = detector_instance.get_recommendations(analysis.predicted_disease)        
         context = {
             'analysis': analysis,
             'recommendations' : recommendations

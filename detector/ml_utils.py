@@ -20,7 +20,7 @@ class ChickenDiseaseDetector:
         except Exception as e:
             # Re-raise the exception to be caught during app startup
             raise IOError(f"Error loading model: {e}") from e
-    
+
     def preprocess_image(self, image_path):
         """Preprocess image for prediction"""
         try:
@@ -105,6 +105,7 @@ class ChickenDiseaseDetector:
         return recommendations.get(disease, {
             'status': 'Unknown',
             'recommendations': ['Consult with a veterinarian for proper diagnosis']
+
         })
 
 # This will hold the single instance of the detector after initialization.

@@ -32,4 +32,5 @@ class ImageUploadForm(forms.ModelForm):
         except Exception:
             raise forms.ValidationError("Invalid image file. Please upload a valid image.")
 
+
         return image

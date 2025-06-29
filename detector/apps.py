@@ -5,6 +5,7 @@ class DetectorConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'detector'
 
+
     def ready(self):
         """
         This method is called once when the Django app is ready.
