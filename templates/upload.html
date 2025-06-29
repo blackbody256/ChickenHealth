@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Image - Chicken Health Detector{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Upload Chicken Dropping Image</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">Select Image</label>
+                        {{ form.image }}
+                        <div class="form-text">Upload a clear image of chicken droppings for analysis.</div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Analyze Image</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h5>Tips for Best Results:</h5>
+            <ul>
+                <li>Use clear, well-lit images</li>
+                <li>Ensure the droppings are visible and in focus</li>
+                <li>Avoid blurry or dark images</li>
+                <li>File size should be under 5MB</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

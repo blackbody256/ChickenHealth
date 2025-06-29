@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Analysis Result - Chicken Health Detector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Uploaded Image</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ analysis.image.url }}" alt="Uploaded chicken dropping" class="img-fluid rounded" style="max-height: 400px;">
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Analysis Results</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Diagnosis:</strong> 
+                    <span class="badge bg-{% if analysis.predicted_disease == 'Healthy' %}success{% else %}warning{% endif %} fs-6">
+                        {{ analysis.predicted_disease }}
+                    </span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Confidence:</strong> {{ analysis.confidence_score|floatformat:2 }}%
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Status:</strong> 
+                    <span class="badge bg-{% if recommendations.status == 'Good' %}success{% else %}danger{% endif %}">
+                        {{ recommendations.status }}
+                    </span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Analysis Date:</strong> {{ analysis.analysis_date|date:"M d, Y H:i" }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>Recommendations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for recommendation in recommendations.recommendations %}
+                        <li class="list-group-item">{{ recommendation }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <div class="alert alert-info mt-3">
+                    <strong>Important:</strong> This analysis is for informational purposes only. 
+                    Always consult with a qualified veterinarian for proper diagnosis and treatment.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{% url 'upload' %}" class="btn btn-success">Analyze Another Image</a>
+</div>
+{% endblock %}
