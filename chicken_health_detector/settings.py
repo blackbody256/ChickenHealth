@@ -15,18 +15,26 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-cs-eb98b676-bd6d-4f67-b2de-e85afe6e6ee3.cs-europe-west1-onse.cloudshell.dev',
+    # 'https://*.yourdomain.com' # Use this format in production
+]
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!7n&atn-u6qftf2jekv7ph&es0oz4&t3eul$xuysa)x6*z)s00'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-!7n&atn-u6qftf2jekv7ph&es0oz4&t3eul$xuysa)x6*z)s00')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '8000-cs-eb98b676-bd6d-4f67-b2de-e85afe6e6ee3.cs-europe-west1-onse.cloudshell.dev',
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -38,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'detector'
+    'detector.apps.DetectorConfig'
 ]
 
 MIDDLEWARE = [

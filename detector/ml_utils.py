@@ -9,16 +9,17 @@ class ChickenDiseaseDetector:
     def __init__(self):
         self.model = None
         self.class_names = ['Healthy', 'Coccidiosis', 'Salmonella', 'Newcastle Disease']  # Adjust based on your model
-        self.load_model()
-    
-    def load_model(self):
         """Load the trained model"""
         model_path = os.path.join(settings.BASE_DIR, 'ml_models', 'chicken_disease_model.h5')
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found at {model_path}. Please ensure the 'ml_models' directory and the .h5 file exist in your project root.")
+
         try:
             self.model = tf.keras.models.load_model(model_path)
-            print("Model loaded successfully")
+            print(f"Model loaded successfully from {model_path}")
         except Exception as e:
-            print(f"Error loading model: {e}")
+            # Re-raise the exception to be caught during app startup
+            raise IOError(f"Error loading model: {e}") from e
     
     def preprocess_image(self, image_path):
         """Preprocess image for prediction"""
@@ -105,3 +106,19 @@ class ChickenDiseaseDetector:
             'status': 'Unknown',
             'recommendations': ['Consult with a veterinarian for proper diagnosis']
         })
+
+# This will hold the single instance of the detector after initialization.
+detector_instance = None
+
+def initialize_detector():
+    """
+    This function is called once by the AppConfig.ready() method to
+    load the model into the singleton instance.
+    """
+    global detector_instance
+    print("Attempting to initialize the Chicken Disease Detector model...")
+    try:
+        detector_instance = ChickenDiseaseDetector()
+    except (FileNotFoundError, IOError) as e:
+        print(f"FATAL: Could not initialize the ChickenDiseaseDetector. {e}")
+        # detector_instance will remain None, and the app will show an error message.
