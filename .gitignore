@@ -1,0 +1,55 @@
+# Gitignore for a Django project.
+
+# Project-specific files
+ml_models/chicken_disease_model.h5
+
+# Django generated files
+db.sqlite3
+db.sqlite3-journal
+*.log
+
+# Media files - User-uploaded content
+/media/
+
+# Environment variables
+# Use a .env.example file to show developers what variables are needed.
+.env
+.env.*
+!/.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
