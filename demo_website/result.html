@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result - Chicken Health Detector</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                🐔 Chicken Health Detector
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-upload"></i> Upload
+                </a>
+                <a class="nav-link" href="history.html">
+                    <i class="fas fa-history"></i> History
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Alert Container -->
+    <div class="container mt-3">
+        <div id="alertContainer"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">
+                    <i class="fas fa-microscope me-2"></i>Analysis Results
+                </h2>
+                <p class="text-muted mb-0">Detailed diagnosis and recommendations</p>
+            </div>
+            <div>
+                <a href="history.html" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-arrow-left me-1"></i>Back to History
+                </a>
+                <a href="index.html" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i>New Analysis
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Image and Basic Info -->
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-camera me-2"></i>Uploaded Image
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <img id="resultImage" src="images/salmo.855.jpg" alt="Analyzed chicken dropping" 
+                             class="img-fluid rounded shadow" style="max-height: 400px; border: 2px solid #dee2e6;">
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Analysis ID: <span id="analysisId">def67890-1234-5678-9abc-def012345678</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analysis Metrics -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Analysis Metrics
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-card">
+                                    <span class="stat-number" id="confidenceDisplay">87.6%</span>
+                                    <span class="stat-label">Confidence</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-card" style="background: linear-gradient(135deg, #17a2b8, #007bff);">
+                                    <span class="stat-number">2.3s</span>
+                                    <span class="stat-label">Processing Time</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-card" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                                    <span class="stat-number">v2.1</span>
+                                    <span class="stat-label">Model Version</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results and Diagnosis -->
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-stethoscope me-2"></i>Diagnosis Results
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="fs-5">🩺 Primary Diagnosis:</strong>
+                                <span class="badge badge-coccidiosis fs-6" id="primaryDiagnosis">
+                                    ⚠️ Coccidiosis
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>🎯 Confidence Score:</strong> 
+                                <span id="confidenceScore">87.6%</span>
+                                <div class="progress mt-2" style="height: 12px;">
+                                    <div id="confidenceBar" class="progress-bar bg-warning" 
+                                         role="progressbar" style="width: 87.6%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>🚨 Health Status:</strong> 
+                                <span class="badge bg-danger fs-6" id="healthStatus">
+                                    Requires Immediate Attention
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>📅 Analysis Date:</strong> 
+                                <span id="analysisDate">June 29, 2025 4:45 PM</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>🧠 Alternative Predictions:</strong>
+                            <div class="mt-2" id="alternativePredictions">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Salmonella</span>
+                                    <span class="badge bg-secondary">8.7%</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Newcastle Disease</span>
+                                    <span class="badge bg-secondary">2.4%</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Healthy</span>
+                                    <span class="badge bg-secondary">1.3%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Disease Information -->
+                <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i><span id="diseaseInfoTitle">Coccidiosis Information</span>
+                        </h6>
+                    </div>
+                    <div class="card-body" id="diseaseInfo">
+                        <p><strong>What is Coccidiosis?</strong></p>
+                        <p class="small">Coccidiosis is a parasitic disease affecting the intestinal tract of chickens, caused by protozoan parasites called coccidia. It's one of the most common and economically significant diseases in poultry.</p>
+                        
+                        <p><strong>🔍 Key Symptoms:</strong></p>
+                        <ul class="small mb-0">
+                            <li>Bloody or mucoid diarrhea</li>
+                            <li>Watery droppings with blood spots</li>
+                            <li>Reduced feed consumption</li>
+                            <li>Weight loss and poor growth</li>
+                            <li>Lethargy and weakness</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Recommendations -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-medical-kit me-2"></i>Detailed Treatment Plan & Recommendations
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Immediate Actions -->
+                            <div class="col-md-6">
+                                <h6 class="text-danger mb-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Immediate Actions (Next 24 hours)
+                                </h6>
+                                <ul class="recommendation-list" id="immediateActions">
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #dc3545;">1</span>
+                                        <div>
+                                            <strong>Isolate affected birds immediately</strong> to prevent spread to healthy chickens
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #dc3545;">2</span>
+                                        <div>
+                                            <strong>Contact a veterinarian</strong> for professional diagnosis and prescription medication
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #dc3545;">3</span>
+                                        <div>
+                                            <strong>Provide fresh, clean water</strong> with electrolyte supplements to prevent dehydration
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #dc3545;">4</span>
+                                        <div>
+                                            <strong>Begin coccidiostat treatment</strong> as prescribed by veterinarian (e.g., Amprolium, Toltrazuril)
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Short-term Management -->
+                            <div class="col-md-6">
+                                <h6 class="text-warning mb-3">
+                                    <i class="fas fa-clock me-2"></i>Short-term Management (1-2 weeks)
+                                </h6>
+                                <ul class="recommendation-list" id="shortTermActions">
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #ffc107; color: #000;">5</span>
+                                        <div>
+                                            <strong>Deep clean and disinfect coops</strong> using appropriate disinfectants (10% ammonia solution)
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #ffc107; color: #000;">6</span>
+                                        <div>
+                                            <strong>Remove wet bedding daily</strong> and replace with dry, clean material
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #ffc107; color: #000;">7</span>
+                                        <div>
+                                            <strong>Monitor feed intake</strong> and provide easily digestible, high-quality feed
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #ffc107; color: #000;">8</span>
+                                        <div>
+                                            <strong>Implement biosecurity measures</strong> including foot baths and equipment disinfection
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <!-- Prevention -->
+                            <div class="col-md-6">
+                                <h6 class="text-info mb-3">
+                                    <i class="fas fa-shield-alt me-2"></i>Prevention Strategies
+                                </h6>
+                                <ul class="recommendation-list" id="preventionStrategies">
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #17a2b8;">✓</span>
+                                        <div>Use medicated starter feed for young chicks</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #17a2b8;">✓</span>
+                                        <div>Maintain proper stocking density to reduce stress</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #17a2b8;">✓</span>
+                                        <div>Ensure adequate ventilation in housing</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #17a2b8;">✓</span>
+                                        <div>Implement regular cleaning schedules</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #17a2b8;">✓</span>
+                                        <div>Quarantine new birds before introducing to flock</div>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Recovery Monitoring -->
+                            <div class="col-md-6">
+                                <h6 class="text-success mb-3">
+                                    <i class="fas fa-chart-line me-2"></i>Recovery Monitoring
+                                </h6>
+                                <ul class="recommendation-list" id="recoveryMonitoring">
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #28a745;">📊</span>
+                                        <div>Monitor droppings daily for improvement</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #28a745;">🍽️</span>
+                                        <div>Track feed and water consumption</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #28a745;">⚖️</span>
+                                        <div>Weigh birds weekly to monitor weight gain</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #28a745;">🩺</span>
+                                        <div>Schedule follow-up vet visits in 1-2 weeks</div>
+                                    </li>
+                                    <li>
+                                        <span class="recommendation-number" style="background-color: #28a745;">🔬</span>
+                                        <div>Consider fecal testing to confirm treatment success</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Emergency Contact and Disclaimer -->
+                        <div class="alert alert-info mt-4 mb-0">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <strong>⚕️ Important Medical Disclaimer:</strong> This AI analysis is for informational purposes only and should not replace professional veterinary diagnosis. Always consult with a qualified veterinarian for accurate diagnosis, treatment plans, and medication prescriptions.
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="text-center">
+                                        <strong class="d-block">Emergency Vet Hotline:</strong>
+                                        <span class="badge bg-danger fs-6 mt-1">📞 1-800-VET-HELP</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4 mb-5">
+            <div class="btn-group-lg" role="group">
+                <a href="index.html" class="btn btn-success btn-lg me-2">
+                    <i class="fas fa-upload me-2"></i>Analyze Another Image
+                </a>
+                <a href="history.html" class="btn btn-primary btn-lg me-2">
+                    <i class="fas fa-history me-2"></i>View History
+                </a>
+                <button class="btn btn-secondary btn-lg me-2" onclick="window.print()">
+                    <i class="fas fa-print me-2"></i>Print Report
+                </button>
+                <button class="btn btn-info btn-lg" onclick="shareResults()">
+                    <i class="fas fa-share me-2"></i>Share Results
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-4 mt-5">
+        <div class="container">
+            <p class="text-muted mb-0">
+                &copy; 2025 Chicken Health Detector | 
+                <a href="#" class="text-decoration-none">Privacy Policy</a> | 
+                <a href="#" class="text-decoration-none">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Load specific result based on URL parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const analysisId = urlParams.get('id');
+            
+            if (analysisId && window.chickenDetector) {
+                const result = window.chickenDetector.getAnalysisById(analysisId);
+                if (result) {
+                    loadResultData(result);
+                }
+            }
+        });
+
+        function loadResultData(result) {
+            // Update image
+            const resultImage = document.getElementById('resultImage');
+            if (resultImage) resultImage.src = result.image;
+
+            // Update diagnosis
+            const primaryDiagnosis = document.getElementById('primaryDiagnosis');
+            if (primaryDiagnosis) {
+                primaryDiagnosis.textContent = result.diagnosis;
+                primaryDiagnosis.className = `badge fs-6 ${getDetailedBadgeClass(result.diagnosis)}`;
+            }
+
+            // Update confidence
+            const confidenceScore = document.getElementById('confidenceScore');
+            const confidenceDisplay = document.getElementById('confidenceDisplay');
+            const confidenceBar = document.getElementById('confidenceBar');
+            
+            if (confidenceScore) confidenceScore.textContent = result.confidence + '%';
+            if (confidenceDisplay) confidenceDisplay.textContent = result.confidence + '%';
+            if (confidenceBar) {
+                confidenceBar.style.width = result.confidence + '%';
+                confidenceBar.className = `progress-bar ${getConfidenceBarClass(result.confidence)}`;
+            }
+
+            // Update analysis ID and date
+            const analysisId = document.getElementById('analysisId');
+            const analysisDate = document.getElementById('analysisDate');
+            
+            if (analysisId) analysisId.textContent = result.id;
+            if (analysisDate) analysisDate.textContent = formatDate(result.date);
+
+            // Update health status
+            const healthStatus = document.getElementById('healthStatus');
+            if (healthStatus) {
+                healthStatus.textContent = getHealthStatus(result.diagnosis);
+                healthStatus.className = `badge fs-6 ${getHealthStatusClass(result.diagnosis)}`;
+            }
+
+            // Update disease information
+            updateDiseaseInformation(result.diagnosis);
+        }
+
+        function getDetailedBadgeClass(diagnosis) {
+            const classes = {
+                'Healthy': 'badge-healthy',
+                'Coccidiosis': 'badge-coccidiosis',
+                'Newcastle Disease': 'badge-newcastle',
+                'Salmonella': 'badge-salmonella'
+            };
+            return classes[diagnosis] || 'bg-secondary';
+        }
+
+        function getConfidenceBarClass(confidence) {
+            if (confidence >= 80) return 'bg-success';
+            if (confidence >= 60) return 'bg-warning';
+            return 'bg-danger';
+        }
+
+        function getHealthStatus(diagnosis) {
+            const statuses = {
+                'Healthy': 'Good Health',
+                'Coccidiosis': 'Requires Immediate Attention',
+                'Newcastle Disease': 'URGENT - Contact Veterinarian',
+                'Salmonella': 'Requires Medical Attention'
+            };
+            return statuses[diagnosis] || 'Unknown Status';
+        }
+
+        function getHealthStatusClass(diagnosis) {
+            const classes = {
+                'Healthy': 'bg-success',
+                'Coccidiosis': 'bg-danger',
+                'Newcastle Disease': 'bg-danger',
+                'Salmonella': 'bg-warning'
+            };
+            return classes[diagnosis] || 'bg-secondary';
+        }
+
+        function updateDiseaseInformation(diagnosis) {
+            const diseaseInfoTitle = document.getElementById('diseaseInfoTitle');
+            const diseaseInfo = document.getElementById('diseaseInfo');
+            
+            const diseaseData = {
+                'Healthy': {
+                    title: 'Healthy Bird Information',
+                    content: `
+                        <p><strong>Excellent Health Status!</strong></p>
+                        <p class="small">Your chicken appears to be in good health based on the dropping analysis. This indicates proper digestion and overall wellness.</p>
+                        <p><strong>🎉 Positive Indicators:</strong></p>
+                        <ul class="small mb-0">
+                            <li>Normal consistency and color</li>
+                            <li>Proper formed droppings</li>
+                            <li>No signs of blood or mucus</li>
+                            <li>Indicates good digestive health</li>
+                            <li>Suggests adequate nutrition</li>
+                        </ul>
+                    `
+                },
+                'Coccidiosis': {
+                    title: 'Coccidiosis Information',
+                    content: `
+                        <p><strong>What is Coccidiosis?</strong></p>
+                        <p class="small">Coccidiosis is a parasitic disease affecting the intestinal tract of chickens, caused by protozoan parasites called coccidia. It's one of the most common and economically significant diseases in poultry.</p>
+                        <p><strong>🔍 Key Symptoms:</strong></p>
+                        <ul class="small mb-0">
+                            <li>Bloody or mucoid diarrhea</li>
+                            <li>Watery droppings with blood spots</li>
+                            <li>Reduced feed consumption</li>
+                            <li>Weight loss and poor growth</li>
+                            <li>Lethargy and weakness</li>
+                        </ul>
+                    `
+                },
+                'Newcastle Disease': {
+                    title: 'Newcastle Disease Information',
+                    content: `
+                        <p><strong>What is Newcastle Disease?</strong></p>
+                        <p class="small">Newcastle Disease is a highly contagious viral infection affecting poultry worldwide. It can cause severe economic losses and requires immediate attention and reporting to authorities.</p>
+                        <p><strong>🔍 Key Symptoms:</strong></p>
+                        <ul class="small mb-0">
+                            <li>Greenish, watery diarrhea</li>
+                            <li>Respiratory distress</li>
+                            <li>Neurological symptoms</li>
+                            <li>Sudden death in severe cases</li>
+                            <li>Reduced egg production</li>
+                        </ul>
+                    `
+                },
+                'Salmonella': {
+                    title: 'Salmonella Information',
+                    content: `
+                        <p><strong>What is Salmonella?</strong></p>
+                        <p class="small">Salmonella is a bacterial infection that can affect chickens and potentially be transmitted to humans. It requires careful management and hygiene protocols.</p>
+                        <p><strong>🔍 Key Symptoms:</strong></p>
+                        <ul class="small mb-0">
+                            <li>Watery, sometimes bloody diarrhea</li>
+                            <li>Dehydration and weakness</li>
+                            <li>Reduced appetite</li>
+                            <li>Lethargy and depression</li>
+                            <li>Potential for human transmission</li>
+                        </ul>
+                    `
+                }
+            };
+
+            const data = diseaseData[diagnosis] || diseaseData['Healthy'];
+            
+            if (diseaseInfoTitle) diseaseInfoTitle.textContent = data.title;
+            if (diseaseInfo) diseaseInfo.innerHTML = data.content;
+        }
+
+        function shareResults() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chicken Health Analysis Results',
+                    text: 'Check out my chicken health analysis results from the AI detector!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Results URL copied to clipboard!');
+                });
+            }
+        }
+
+        // Print styles
+        const printStyles = `
+            <style>
+                @media print {
+                    .btn-group-lg, .navbar, footer { display: none !important; }
+                    .card { break-inside: avoid; }
+                    .container { max-width: 100% !important; }
+                }
+            </style>
+        `;
+        document.head.insertAdjacentHTML('beforeend', printStyles);
+    </script>
+</body>
+</html>
