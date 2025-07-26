@@ -1,0 +1,137 @@
+import os
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.efficientnet import preprocess_input
+import numpy as np
+
+# Define the class names (ensure this order matches your model's training)
+class_names = ['Coccidiosis', 'Healthy', 'New Castle Disease', 'Salmonella']
+
+# Recommendations dictionary
+recommendations = {
+    'Coccidiosis': {
+        'treatment': [
+            'Administer anticoccidial drugs (e.g., Amprolium, Sulfaquinoxaline) as prescribed by a vet.',
+            'Ensure proper hydration and nutrition to support recovery.'
+        ],
+        'prevention': [
+            'Maintain strict hygiene in coops and feeders.',
+            'Use coccidiostats in feed for young birds.',
+            'Implement a rotation of anticoccidial drugs to prevent resistance.',
+            'Ensure proper ventilation and dry litter conditions.'
+        ],
+        'immediate_action': [
+            'Isolate affected birds immediately to prevent spread.',
+            'Clean and disinfect the coop thoroughly.',
+            'Consult a veterinarian for accurate diagnosis and treatment plan.'
+        ]
+    },
+    'Healthy': {
+        'treatment': [
+            'No specific treatment needed. Continue good husbandry practices.'
+        ],
+        'prevention': [
+            'Maintain a balanced diet and fresh water supply.',
+            'Ensure clean and spacious living conditions.',
+            'Regularly monitor flock health and behavior.',
+            'Implement a biosecurity plan to prevent disease introduction.'
+        ],
+        'immediate_action': [
+            'Continue routine care and observation.',
+            'Record daily feed and water consumption.'
+        ]
+    },
+    'New Castle Disease': {
+        'treatment': [
+            'There is no specific treatment for Newcastle Disease. Supportive care may be provided.',
+            'Focus on preventing secondary bacterial infections.'
+        ],
+        'prevention': [
+            'Vaccination is the most effective preventive measure.',
+            'Strict biosecurity protocols are crucial.',
+            'Avoid contact with wild birds and other poultry.'
+        ],
+        'immediate_action': [
+            'Immediately report suspected cases to veterinary authorities.',
+            'Isolate affected birds and implement strict quarantine measures.',
+            'Cull severely affected birds to prevent further spread (under veterinary guidance).'
+        ]
+    },
+    'Salmonella': {
+        'treatment': [
+            'Antibiotics may be prescribed by a veterinarian, but use with caution due to potential for resistance and impact on gut flora.',
+            'Provide supportive care, including electrolytes and vitamins.'
+        ],
+        'prevention': [
+            'Source chicks from NPIP-certified hatcheries.',
+            'Maintain strict hygiene in all areas, especially feed and water.',
+            'Control rodents and wild birds.',
+            'Consider vaccination in high-risk areas.'
+        ],
+        'immediate_action': [
+            'Isolate sick birds.',
+            'Thoroughly clean and disinfect contaminated areas.',
+            'Test the flock to identify carriers.',
+            'Consult a veterinarian for guidance on treatment and control.'
+        ]
+    }
+}
+
+# Global variable for the model
+model = None
+
+def load_model():
+    """Loads the Keras model into a global variable."""
+    global model
+    if model is None:
+        model_path = os.path.join(settings.BASE_DIR, '..', 'efficientnetb3-Chicken Disease-98.27.h5')
+        model = tf.keras.models.load_model(model_path, compile=False)
+
+def upload_predict(request):
+    load_model()  # Load the model if it's not already loaded
+
+    if request.method == 'POST' and request.FILES['image']:
+        # Get the uploaded image
+        uploaded_image = request.FILES['image']
+        fs = FileSystemStorage()
+        filename = fs.save(uploaded_image.name, uploaded_image)
+        uploaded_image_url = fs.url(filename)
+
+        # Preprocess the image
+        img_path = os.path.join(settings.MEDIA_ROOT, filename)
+        img = image.load_img(img_path, target_size=(224, 224))
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        img_array = preprocess_input(img_array)
+
+        # Make a prediction
+        prediction = model.predict(img_array)
+        predicted_class = class_names[np.argmax(prediction)]
+        confidence = np.max(prediction) * 100
+
+        # Redirect to results page with data
+        return redirect('results_view',
+                        predicted_class=predicted_class,
+                        confidence=f'{confidence:.2f}%',
+                        uploaded_image_url=uploaded_image_url)
+
+    return render(request, 'detector/upload.html')
+
+def results_view(request, predicted_class, confidence, uploaded_image_url):
+    # Get recommendations for the predicted class
+    class_recommendations = recommendations.get(predicted_class, {
+        'treatment': ['No specific recommendations available.'],
+        'prevention': ['No specific recommendations available.'],
+        'immediate_action': ['No specific recommendations available.']
+    })
+
+    context = {
+        'predicted_class': predicted_class,
+        'confidence': confidence,
+        'uploaded_image_url': uploaded_image_url,
+        'recommendations': class_recommendations
+    }
+    return render(request, 'detector/results.html', context)
