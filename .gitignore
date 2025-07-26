@@ -53,3 +53,13 @@ env/
 .vscode/
 .idea/
 *.swp
+
+# Machine Learning / AI models
+*.h5
+*.pkl
+*.joblib
+*.model
+*.weights
+*.pb
+*.ckpt
+*.tfrecords
