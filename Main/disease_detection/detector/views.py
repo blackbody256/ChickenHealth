@@ -9,8 +9,12 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 import numpy as np
 from detector.models import Diagnosis
 from django.contrib.auth.decorators import login_required
-
-@login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from PIL import Image
+import io
+import base64
 
 # Define the class names (ensure this order matches your model's training)
 class_names = ['Coccidiosis', 'Healthy', 'New Castle Disease', 'Salmonella']
@@ -150,3 +154,22 @@ def results_view(request, predicted_class, confidence, uploaded_image_url):
         'recommendations': class_recommendations
     }
     return render(request, 'detector/results.html', context)
+
+def index(request):
+    return render(request, 'detector/index.html')
+
+@csrf_exempt
+def predict(request):
+    if request.method == 'POST':
+        try:
+            # Define class names
+            class_names = ['Coccidiosis', 'Healthy', 'New Castle Disease', 'Salmonella']
+            
+            # Your prediction logic here
+            # ...
+            
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+    
+    return JsonResponse({'error': 'Invalid request method'})
