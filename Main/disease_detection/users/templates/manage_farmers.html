@@ -182,8 +182,8 @@
                     </td>
                     <td>
                         <div class="action-icons">
-                            <a href="{% url 'edit_farmer' farmer.id %}" title="Edit">&#9998;</a>
-                            <a href="{% url 'delete_farmer' farmer.id %}" title="Delete" class="delete-icon" onclick="return confirm('Are you sure?')">&#128465;</a>
+                            <a href="{% url 'users:edit_farmer' farmer.id %}" title="Edit">&#9998;</a>
+                            <a href="{% url 'users:delete_farmer' farmer.id %}" title="Delete" class="delete-icon" onclick="return confirm('Are you sure?')">&#128465;</a>
                         </div>
                     </td>
                 </tr>

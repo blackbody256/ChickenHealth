@@ -258,27 +258,21 @@ def delete_farmer(request, user_id):
 @login_required
 @admin_required
 def add_farmer(request):
-    if request.method == "POST":
+    """Add a new farmer user"""
+    if request.method == 'POST':
         form = FarmerCreationForm(request.POST)
         if form.is_valid():
-            # Check if trying to create another admin
-            if form.cleaned_data.get('role') == 'ADMIN':
-                existing_admins = User.objects.filter(role='ADMIN').count()
-                if existing_admins >= 1:
-                    messages.error(request, "Only one admin is allowed in the system.")
-                    return render(request, "add_farmer.html", {"form": form})
-            
             form.save()
-            messages.success(request, "Farmer added successfully.")
-            return redirect("manage_farmers")
+            messages.success(request, 'Farmer added successfully!')
+            return redirect('users:manage_farmers')
     else:
         form = FarmerCreationForm()
     
-    return render(request, "add_farmer.html", {"form": form})
+    return render(request, 'add_farmer.html', {'form': form})
 
 @login_required
 def user_logout(request):
-    """Logout user and redirect to login"""
+    """Custom logout view"""
     logout(request)
-    messages.success(request, 'You have been logged out successfully.')
-    return redirect('login')
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('users:home')

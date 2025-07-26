@@ -22,9 +22,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('diagnosis.urls')),
-    path('', include('users.urls')),
-    path('administrator/', include('administrator.urls')),
-    path('vet/', include('vet.urls')),
-    path('chat/', include('chat.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', include('users.urls')),  # Changed from diagnosis.urls to users.urls for home
+    path('diagnosis/', include('diagnosis.urls')),  # Diagnosis app under /diagnosis/
+    path('users/', include('users.urls')),  # User authentication
+    path('administrator/', include('administrator.urls')),  # Admin dashboard
+    path('vet/', include('vet.urls')),  # Veterinarian features
+    path('chat/', include('chat.urls')),  # Chat functionality
+]
+
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

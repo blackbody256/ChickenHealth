@@ -12,13 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Diagnosis',
+            name='DatasetUpload',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='diagnoses/')),
-                ('disease_name', models.CharField(max_length=255)),
-                ('confidence', models.FloatField()),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
+                ('name', models.CharField(max_length=100)),
+                ('zip_file', models.FileField(upload_to='datasets/')),
+                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
             ],
         ),
     ]

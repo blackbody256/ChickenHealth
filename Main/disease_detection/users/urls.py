@@ -1,38 +1,38 @@
 from django.urls import path
-from .views import (
-    SignUpView, 
-    CustomLoginView, 
-    ProfileEditView, 
-    dashboard, 
-    admin_dashboard, 
-    vet_dashboard, 
-    about, 
-    CustomPasswordResetView, 
-    CustomPasswordResetDoneView, 
-    CustomPasswordResetConfirmView, 
-    CustomPasswordResetCompleteView,
-    manage_farmers,
-    edit_farmer,
-    delete_farmer,
-    add_farmer,
-    user_logout
-)
+from django.contrib.auth import views as auth_views
+from . import views
+
+app_name = 'users'
 
 urlpatterns = [
-    path('signup/', SignUpView.as_view(), name='signup'),
-    path('login/', CustomLoginView.as_view(), name='login'),
-    path('profile/', ProfileEditView.as_view(), name='profile_edit'),
-    path('dashboard/', dashboard, name='dashboard'),
-    path('admin-dashboard/', admin_dashboard, name='admin_dashboard'),
-    path('vet-dashboard/', vet_dashboard, name='vet_dashboard'),
-    path('about/', about, name='about'),
-    path('password-reset/', CustomPasswordResetView.as_view(), name='password_reset'),
-    path('password-reset/done/', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password-reset/confirm/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('password-reset/complete/', CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    path('manage-farmers/', manage_farmers, name='manage_farmers'),
-    path('edit-farmer/<int:user_id>/', edit_farmer, name='edit_farmer'),
-    path('delete-farmer/<int:user_id>/', delete_farmer, name='delete_farmer'),
-    path('add-farmer/', add_farmer, name='add_farmer'),
-    path('logout/', user_logout, name='logout'),
+    # Home page at root URL
+    path('', views.home, name='home'),  # This will handle the root URL
+    
+    # Authentication
+    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    
+    # User pages
+    path('about/', views.about, name='about'),
+    
+    # Dashboards
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('vet-dashboard/', views.vet_dashboard, name='vet_dashboard'),
+    
+    # Profile management
+    path('profile/', views.ProfileEditView.as_view(), name='profile_edit'),
+    
+    # User management (admin only)
+    path('manage-farmers/', views.manage_farmers, name='manage_farmers'),
+    path('add-farmer/', views.add_farmer, name='add_farmer'),
+    path('edit-farmer/<int:user_id>/', views.edit_farmer, name='edit_farmer'),
+    path('delete-farmer/<int:user_id>/', views.delete_farmer, name='delete_farmer'),
+    
+    # Password reset
+    path('password-reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password-reset/done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password-reset-complete/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]

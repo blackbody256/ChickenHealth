@@ -188,11 +188,11 @@
             <button type="submit" class="submit-btn">Sign In</button>
             
             <div class="forgot-password">
-                <a href="{% url 'password_reset' %}">Forgot your password?</a>
+                <a href="{% url 'users:password_reset' %}">Forgot your password?</a>
             </div>
             
             <p class="signup-msg">
-                Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>
+                Don't have an account? <a href="{% url 'users:signup' %}">Sign up here</a>
             </p>
         </form>
     </div>
