@@ -24,7 +24,7 @@ from django import forms
 from .forms import FarmerForm
 from django.shortcuts import get_object_or_404
 from functools import wraps
-from detector.models import Diagnosis
+from diagnosis.models import Diagnosis
 
 #decorator to check if user is admin
 def admin_required(view_func):
