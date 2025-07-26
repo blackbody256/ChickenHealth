@@ -2,10 +2,15 @@ import os
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.decorators import login_required
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.efficientnet import preprocess_input
 import numpy as np
+from detector.models import Diagnosis
+from django.contrib.auth.decorators import login_required
+
+@login_required
 
 # Define the class names (ensure this order matches your model's training)
 class_names = ['Coccidiosis', 'Healthy', 'New Castle Disease', 'Salmonella']
@@ -112,6 +117,15 @@ def upload_predict(request):
         predicted_class = class_names[np.argmax(prediction)]
         confidence = np.max(prediction) * 100
 
+        # Save diagnosis to database
+        if request.user.is_authenticated:
+            Diagnosis.objects.create(
+                user=request.user,
+                image=filename,
+                disease_name=predicted_class,
+                confidence=confidence
+            )
+
         # Redirect to results page with data
         return redirect('results_view',
                         predicted_class=predicted_class,
@@ -120,6 +134,7 @@ def upload_predict(request):
 
     return render(request, 'detector/upload.html')
 
+@login_required
 def results_view(request, predicted_class, confidence, uploaded_image_url):
     # Get recommendations for the predicted class
     class_recommendations = recommendations.get(predicted_class, {

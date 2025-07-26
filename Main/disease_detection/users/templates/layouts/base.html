@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Chicken Disease Detection{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f7f5;
+            color: #1a3c34;
+        }
+        
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content-body {
+            display: flex;
+            flex: 1;
+            min-height: 0; /* Allow flex items to shrink */
+        }
+        
+        main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto; /* Allow scrolling if content exceeds height */
+        }
+
+        /* Navbar Styles - Only for unauthenticated users */
+        .navbar {
+            background-color: #ffffff;
+            padding: 0;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: none;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: 64px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo img {
+            height: 36px;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            gap: 1rem;
+        }
+        
+        .nav-links a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a:focus {
+            color: #4caf50;
+        }
+        
+        .logout-btn {
+            background: none !important;
+            border: none;
+            color: #2e7d32 !important;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .logout-btn:hover {
+            color: #4caf50 !important;
+        }
+
+        /* Sidebar Styles - Full Height */
+        .sidebar {
+            width: 240px;
+            min-width: 240px; /* Prevent shrinking */
+            background: linear-gradient(180deg, #2e7d32 0%, #206922 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            height: 100%; /* Full height of content area */
+            min-height: 100vh; /* Minimum full viewport height */
+        }
+
+        .sidebar .logo {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0; /* Don't shrink logo area */
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            flex: 1; /* Take remaining space */
+            padding: 1rem 0;
+            overflow-y: auto; /* Allow scrolling if many items */
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #e8f5e9;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: #ffffff;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .sidebar-nav a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #4caf50;
+        }
+
+        .sidebar-nav i {
+            width: 20px;
+            text-align: center;
+            color: #e8f5e9;
+        }
+
+        .sidebar-nav a.active i {
+            color: #ffffff;
+        }
+
+        /* Form styles for logout buttons in sidebar */
+        .sidebar-nav form {
+            margin: 0;
+        }
+
+        .sidebar-nav form button {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: #e8f5e9;
+            font-size: 0.95rem;
+            font-weight: 400;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-nav form button:hover {
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+        }
+
+        /* Authenticated layout - Full height setup */
+        .authenticated-layout {
+            height: 100vh;
+            overflow: hidden; /* Prevent page scrolling */
+        }
+
+        .authenticated-layout .content-body {
+            height: 100vh;
+            overflow: hidden; /* Content manages its own overflow */
+        }
+
+        .authenticated-layout main {
+            padding: 1.5rem;
+            height: 100%;
+            overflow-y: auto; /* Allow main content to scroll */
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(180deg, #2e7d32 0%, #206922 100%);
+            color: #e8f5e9;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.85rem;
+            flex-shrink: 0; /* Don't shrink footer */
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .content-body {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                order: 2;
+                height: auto;
+                min-height: auto;
+            }
+            
+            .sidebar .logo {
+                padding: 1rem;
+            }
+            
+            .sidebar-nav {
+                padding: 0.5rem 0;
+            }
+            
+            main {
+                order: 1;
+                padding: 1rem;
+                height: auto;
+                overflow-y: visible;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .authenticated-layout {
+                height: auto;
+                overflow: visible;
+            }
+            
+            .authenticated-layout .content-body {
+                height: auto;
+                overflow: visible;
+            }
+            
+            .authenticated-layout main {
+                height: auto;
+                overflow-y: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container {% if user.is_authenticated %}authenticated-layout{% endif %}">
+        <!-- Header - Only show for unauthenticated users -->
+        {% if not user.is_authenticated %}
+        <header>
+            <nav class="navbar">
+                <div class="nav-container">
+                    <div class="logo">
+                        <a href="{% url 'home' %}">
+                            <img src="" alt="Logo" />
+                        </a>
+                    </div>
+                    <ul class="nav-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'about' %}">About</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'signup' %}">Register</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        {% endif %}
+
+        <div class="content-body">
+            {% if user.is_authenticated %}
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="logo">
+                    <a href="{% url 'home' %}">
+                        <img src="" alt="Logo" />
+                    </a>
+                </div>
+                <ul class="sidebar-nav">
+                    {% if user.role == 'ADMIN' %}
+                        <li><a href="{% url 'admin_dashboard' %}" data-page="admin_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="{% url 'profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
+                        <li><a href="{% url 'manage_farmers' %}" data-page="manage_farmers"><i class="fas fa-users"></i> Manage Farmers</a></li>
+                        <li><a href="{% url 'index' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    {% elif user.role == 'VET' %}
+                        <li><a href="{% url 'vet_dashboard' %}" data-page="vet_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="{% url 'profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="{% url 'index' %}" data-page="diagnose"><i class="fas fa-bug"></i> Assist Diagnosis</a></li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'dashboard' %}" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="{% url 'profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
+                        <li><a href="{% url 'index' %}" data-page="diagnose"><i class="fas fa-bug"></i> Diagnose</a></li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    {% endif %}
+                </ul>
+            </aside>
+            {% endif %}
+
+            <!-- Main Content -->
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+
+        <!-- Footer - Only show for unauthenticated users -->
+        {% if not user.is_authenticated %}
+        <footer class="footer">
+            <p>© 2025 Chicken Disease Detection. All rights reserved.</p>
+            <p>Contact: info@chickendisease.com</p>
+        </footer>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Initializing sidebar navigation...');
+            
+            // Get current URL path
+            const currentPath = window.location.pathname;
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a[data-page]');
+            
+            console.log('📍 Current path:', currentPath);
+            console.log('🔗 Found sidebar links:', sidebarLinks.length);
+            
+            // Enhanced URL to data-page mapping
+            const urlMapping = {
+                // Admin URLs
+                '/admin-dashboard/': 'admin_dashboard',
+                '/profile/': 'profile_edit',
+                '/manage-farmers/': 'manage_farmers',
+                '/diagnose/': 'diagnose',
+                
+                // Vet URLs
+                '/vet-dashboard/': 'vet_dashboard',
+                
+                // Farmer URLs
+                '/dashboard/': 'dashboard',
+            };
+            
+            // Function to check if current path matches link
+            function isActiveLink(link) {
+                const href = link.getAttribute('href');
+                const dataPage = link.getAttribute('data-page');
+                
+                console.log(`🔍 Checking link: ${dataPage} (${href})`);
+                
+                // Direct URL match (exact)
+                if (currentPath === href) {
+                    console.log(`✅ Exact match found: ${dataPage}`);
+                    return true;
+                }
+                
+                // Check URL mapping
+                if (urlMapping[currentPath] === dataPage) {
+                    console.log(`✅ Mapping match found: ${dataPage}`);
+                    return true;
+                }
+                
+                // Special handling for diagnosis pages
+                if (dataPage === 'diagnose' && (
+                    currentPath.includes('/diagnose/') || 
+                    currentPath.startsWith('/diagnose')
+                )) {
+                    console.log(`✅ Diagnosis match found: ${dataPage}`);
+                    return true;
+                }
+                
+                // Partial match for nested pages (but not root)
+                if (href !== '/' && currentPath.startsWith(href)) {
+                    console.log(`✅ Partial match found: ${dataPage}`);
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            // Clear all active states first
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set active state based on current page
+            let activeFound = false;
+            sidebarLinks.forEach(link => {
+                if (isActiveLink(link) && !activeFound) {
+                    link.classList.add('active');
+                    activeFound = true;
+                    console.log(`🎯 Set active: ${link.getAttribute('data-page')}`);
+                }
+            });
+            
+            if (!activeFound) {
+                console.log('⚠️ No active link found for current path');
+            }
+            
+            // Handle click events (removed to prevent conflicts)
+            // The active state will only be set based on the actual current page
+            
+            console.log('✅ Sidebar navigation initialized');
+        });
+    </script>
+</body>
+</html>

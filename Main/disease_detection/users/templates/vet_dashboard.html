@@ -1,0 +1,565 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.5rem;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .dashboard-title i {
+        color: #28a745;
+        font-size: 1.8rem;
+    }
+
+    .dashboard-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        position: relative;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(40, 167, 69, 0.15);
+        border-color: #28a745;
+    }
+
+    .stat-card h4 {
+        font-size: 0.95rem;
+        color: #2c3e50;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stat-card h4 i {
+        color: #28a745;
+        font-size: 1rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #28a745;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+
+    .stat-subtext {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    .recent-activities {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .recent-activities::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .recent-activities h3 {
+        color: #2c3e50;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .recent-activities h3::before {
+        content: '📊';
+        font-size: 1.2rem;
+    }
+
+    .recent-activities ul {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+
+    .recent-activities li {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        background: #f8fff8;
+        border-radius: 10px;
+        position: relative;
+        border-left: 4px solid #28a745;
+        transition: all 0.3s ease;
+    }
+
+    .recent-activities li:hover {
+        transform: translateX(5px);
+        box-shadow: 0 3px 15px rgba(40, 167, 69, 0.1);
+    }
+
+    .badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .badge.green { 
+        background: linear-gradient(135deg, #28a745, #20c997); 
+        color: white; 
+    }
+    .badge.red { 
+        background: linear-gradient(135deg, #dc3545, #c82333); 
+        color: white; 
+    }
+    .badge.blue { 
+        background: linear-gradient(135deg, #17a2b8, #138496); 
+        color: white; 
+    }
+    .badge.gray { 
+        background: linear-gradient(135deg, #6c757d, #495057); 
+        color: white; 
+    }
+
+    .view-all {
+        display: block;
+        width: 100%;
+        margin-top: 1.5rem;
+        padding: 0.875rem;
+        border: 2px solid #28a745;
+        background: white;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        color: #28a745;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .view-all:hover {
+        background: #28a745;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+    }
+
+    .sidebar-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .sidebar-cards .card {
+        background: white;
+        padding: 1.75rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-cards .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .sidebar-cards .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(40, 167, 69, 0.15);
+        border-color: #28a745;
+    }
+
+    .sidebar-cards .card h3 {
+        color: #2c3e50;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .weather-list,
+    .health-breakdown {
+        list-style: none;
+        padding: 0;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .weather-list li,
+    .health-breakdown li {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(40, 167, 69, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .weather-list li:last-child,
+    .health-breakdown li:last-child {
+        border-bottom: none;
+    }
+
+    .health-score {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+    }
+
+    .health-score .subtext {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+        display: block;
+    }
+
+    .progress-bar {
+        height: 10px;
+        background: #e9ecef;
+        border-radius: 10px;
+        margin: 1rem 0;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .progress {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.6s ease;
+        box-shadow: 0 1px 3px rgba(40, 167, 69, 0.3);
+    }
+
+    .urgent-alert {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: 1px solid #f39c12;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border-left: 4px solid #f39c12;
+        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.1);
+    }
+
+    .urgent-alert h5 {
+        margin: 0 0 0.5rem 0;
+        color: #d68910;
+        font-weight: 700;
+    }
+
+    .weather-card {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 6px 25px rgba(40, 167, 69, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .weather-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        transform: rotate(45deg);
+    }
+
+    .weather-card h3 {
+        margin: 0 0 1rem 0;
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
+    }
+
+    .weather-temp {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0.5rem 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+    }
+
+    .action-btn:hover {
+        background: linear-gradient(135deg, #20c997, #17a2b8);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tips-list li {
+        padding: 0.875rem 0;
+        border-bottom: 1px solid rgba(40, 167, 69, 0.1);
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .tips-list li:last-child {
+        border-bottom: none;
+    }
+
+    .tips-list li:hover {
+        padding-left: 0.5rem;
+        background: rgba(40, 167, 69, 0.03);
+        border-radius: 8px;
+    }
+
+    .tips-list li i {
+        color: #28a745;
+        margin-top: 0.25rem;
+        font-size: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #6c757d;
+        background: rgba(40, 167, 69, 0.03);
+        border-radius: 15px;
+        border: 2px dashed rgba(40, 167, 69, 0.2);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #28a745;
+        opacity: 0.7;
+    }
+
+    .empty-state h4 {
+        color: #2c3e50;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.75rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .main-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .recent-activities {
+            padding: 1.5rem;
+        }
+
+        .sidebar-cards .card {
+            padding: 1.5rem;
+        }
+
+        .weather-card {
+            padding: 1.5rem;
+        }
+
+        .weather-temp {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <h2 class="dashboard-title">
+        <i class="fas fa-tachometer-alt"></i>
+        Vet Dashboard
+    </h2>
+    <p class="dashboard-subtitle">Welcome back, {{ user.username }}! Here's your platform overview.</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h4><i class="fas fa-users"></i> Total Farmers</h4>
+            <p class="stat-value">{{ total_farmers|default:"0" }}</p>
+            <p class="stat-subtext">Assisted farmers</p>
+        </div>
+        <div class="stat-card">
+            <h4><i class="fas fa-search"></i> Total Diagnoses</h4>
+            <p class="stat-value">{{ total_diagnoses|default:"0" }}</p>
+            <p class="stat-subtext">Droppings analyzed</p>
+        </div>
+        <div class="stat-card">
+            <h4><i class="fas fa-check-circle"></i> Healthy Droppings</h4>
+            <p class="stat-value">{{ healthy_droppings|default:"0" }}</p>
+            <p class="stat-subtext">Healthy cases</p>
+        </div>
+        <div class="stat-card">
+            <h4><i class="fas fa-exclamation-triangle"></i> Diseased Droppings</h4>
+            <p class="stat-value">{{ diseased_droppings|default:"0" }}</p>
+            <p class="stat-subtext">Diseased cases</p>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="recent-activities">
+            <h3>Recent Activities</h3>
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h4>No recent activity</h4>
+                <p>Recent user activities will be displayed here.</p>
+            </div>
+        </div>
+
+        <div class="sidebar-cards">
+            <div class="card">
+                <h3><i class="fas fa-rocket"></i> Quick Actions</h3>
+                <ul class="tips-list">
+                    <li>
+                        <a href="{% url 'index' %}" class="action-btn">
+                            <i class="fas fa-bug"></i>
+                            <span>Assist Diagnosis</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
