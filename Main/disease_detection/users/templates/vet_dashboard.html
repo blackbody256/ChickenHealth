@@ -552,9 +552,21 @@
                 <h3><i class="fas fa-rocket"></i> Quick Actions</h3>
                 <ul class="tips-list">
                     <li>
-                        <a href="{% url 'index' %}" class="action-btn">
+                        <a href="{% url 'diagnosis:upload_predict' %}" class="action-btn">
                             <i class="fas fa-bug"></i>
                             <span>Assist Diagnosis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'vet:dataset_list' %}" class="action-btn">
+                            <i class="fas fa-database"></i>
+                            <span>Manage Datasets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'chat:dashboard' %}" class="action-btn">
+                            <i class="fas fa-comments"></i>
+                            <span>Expert Chat</span>
                         </a>
                     </li>
                 </ul>
