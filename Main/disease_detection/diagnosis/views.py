@@ -1,20 +1,23 @@
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.efficientnet import preprocess_input
 import numpy as np
 from .models import Diagnosis  # Changed from detector.models to .models
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from PIL import Image
 import io
 import base64
+from django.core.paginator import Paginator
+from django.db.models import Q, Avg, Count
+from datetime import datetime, timedelta
 
 # Define the class names (ensure this order matches your model's training)
 class_names = ['Coccidiosis', 'Healthy', 'New Castle Disease', 'Salmonella']
@@ -159,12 +162,105 @@ def results_view(request, predicted_class, confidence, uploaded_image_url):
 
 @login_required
 def diagnosis_history(request):
-    """Display user's diagnosis history"""
-    user_diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-timestamp')
+    """Display user's diagnosis history with filtering and pagination"""
+    diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-timestamp')
+    
+    # Apply filters
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    disease_filter = request.GET.get('disease_filter')
+    
+    if date_from:
+        diagnoses = diagnoses.filter(timestamp__date__gte=date_from)
+    if date_to:
+        diagnoses = diagnoses.filter(timestamp__date__lte=date_to)
+    if disease_filter:
+        if disease_filter == 'healthy':
+            diagnoses = diagnoses.filter(disease_name__icontains='healthy')
+        else:
+            diagnoses = diagnoses.filter(disease_name__icontains=disease_filter)
+    
+    # Calculate statistics
+    total_diagnoses = diagnoses.count()
+    healthy_count = diagnoses.filter(disease_name__icontains='healthy').count()
+    disease_count = total_diagnoses - healthy_count
+    avg_confidence = diagnoses.aggregate(avg=Avg('confidence'))['avg'] or 0
+    
+    # Pagination
+    paginator = Paginator(diagnoses, 10)  # Show 10 diagnoses per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     context = {
-        'diagnoses': user_diagnoses
+        'diagnoses': page_obj,
+        'total_diagnoses': total_diagnoses,
+        'healthy_count': healthy_count,
+        'disease_count': disease_count,
+        'avg_confidence': avg_confidence,
+        'is_paginated': page_obj.has_other_pages(),
+        'page_obj': page_obj,
     }
+    
     return render(request, 'diagnosis/history.html', context)
+
+@login_required
+def diagnosis_detail(request, diagnosis_id):
+    """Display detailed view of a specific diagnosis"""
+    diagnosis = get_object_or_404(Diagnosis, id=diagnosis_id, user=request.user)
+    
+    # Get similar diagnoses (same disease type, recent)
+    similar_diagnoses = Diagnosis.objects.filter(
+        user=request.user,
+        disease_name=diagnosis.disease_name
+    ).exclude(id=diagnosis.id).order_by('-timestamp')[:5]
+    
+    context = {
+        'diagnosis': diagnosis,
+        'similar_diagnoses': similar_diagnoses,
+    }
+    
+    return render(request, 'diagnosis/detail.html', context)
+
+@login_required
+def reanalyze_diagnosis(request, diagnosis_id):
+    """Re-analyze an existing diagnosis image"""
+    diagnosis = get_object_or_404(Diagnosis, id=diagnosis_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Load the model and re-analyze the image
+        load_model()
+        
+        # Get the image path
+        img_path = diagnosis.image.path
+        
+        try:
+            # Preprocess the image
+            img = image.load_img(img_path, target_size=(224, 224))
+            img_array = image.img_to_array(img)
+            img_array = np.expand_dims(img_array, axis=0)
+            img_array = preprocess_input(img_array)
+
+            # Make a prediction
+            prediction = model.predict(img_array)
+            predicted_class = class_names[np.argmax(prediction)]
+            confidence = np.max(prediction) * 100
+
+            # Create a new diagnosis entry
+            new_diagnosis = Diagnosis.objects.create(
+                user=request.user,
+                image=diagnosis.image.name,  # Reuse the same image
+                disease_name=predicted_class,
+                confidence=confidence
+            )
+
+            messages.success(request, 'Image re-analyzed successfully!')
+            return redirect('diagnosis:detail', diagnosis_id=new_diagnosis.id)
+            
+        except Exception as e:
+            messages.error(request, f'Error re-analyzing image: {str(e)}')
+            return redirect('diagnosis:detail', diagnosis_id=diagnosis.id)
+    
+    return redirect('diagnosis:detail', diagnosis_id=diagnosis.id)
 
 def index(request):
     """Home page"""

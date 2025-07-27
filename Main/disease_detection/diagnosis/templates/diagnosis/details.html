@@ -1,0 +1,585 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Diagnosis Details - {{ diagnosis.disease_name }}{% endblock %}
+
+{% block content %}
+<style>
+    .detail-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .detail-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .detail-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .detail-title i {
+        color: #28a745;
+        font-size: 2rem;
+    }
+
+    .breadcrumb {
+        color: #6c757d;
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb a {
+        color: #28a745;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .detail-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .detail-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .detail-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(40, 167, 69, 0.15);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-title i {
+        color: #28a745;
+        font-size: 1.3rem;
+    }
+
+    .diagnosis-image {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .diagnosis-badge {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .diagnosis-badge.healthy {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .diagnosis-badge.disease {
+        background: linear-gradient(135deg, #dc3545, #fd7e14);
+        color: white;
+    }
+
+    .detail-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .info-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .confidence-section {
+        margin: 2rem 0;
+    }
+
+    .confidence-meter {
+        background: #e9ecef;
+        border-radius: 25px;
+        height: 20px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ffc107, #28a745);
+        border-radius: 25px;
+        transition: width 1s ease-out;
+        position: relative;
+    }
+
+    .confidence-text {
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #2c3e50;
+    }
+
+    .recommendations-section {
+        grid-column: 1 / -1;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title i {
+        color: #28a745;
+        font-size: 1.5rem;
+    }
+
+    .recommendation-category {
+        margin-bottom: 2rem;
+    }
+
+    .category-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .category-title.treatment {
+        color: #17a2b8;
+    }
+
+    .category-title.treatment::before {
+        content: '💊';
+        font-size: 1.2rem;
+    }
+
+    .category-title.prevention {
+        color: #28a745;
+    }
+
+    .category-title.prevention::before {
+        content: '🛡️';
+        font-size: 1.2rem;
+    }
+
+    .category-title.immediate {
+        color: #dc3545;
+    }
+
+    .category-title.immediate::before {
+        content: '⚡';
+        font-size: 1.2rem;
+    }
+
+    .recommendation-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .recommendation-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border-left: 4px solid #28a745;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .recommendation-item:hover {
+        background: rgba(40, 167, 69, 0.05);
+        transform: translateX(5px);
+    }
+
+    .recommendation-item::before {
+        content: '•';
+        color: #28a745;
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .action-section {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: white;
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        color: white;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Timeline for similar diagnoses */
+    .timeline-section {
+        grid-column: 1 / -1;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        margin-top: 2rem;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover {
+        background: rgba(40, 167, 69, 0.05);
+    }
+
+    .timeline-date {
+        font-weight: 600;
+        color: #28a745;
+        min-width: 120px;
+    }
+
+    .timeline-content {
+        flex: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .detail-section {
+            padding: 1rem;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-container {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .detail-card {
+            padding: 1.5rem;
+        }
+
+        .recommendations-section {
+            padding: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="detail-section">
+    <div class="detail-header">
+        <div class="breadcrumb">
+            <a href="{% url 'users:dashboard' %}">Dashboard</a> / 
+            <a href="{% url 'diagnosis:history' %}">History</a> / 
+            Diagnosis Details
+        </div>
+        
+        <h1 class="detail-title">
+            <i class="fas fa-microscope"></i>
+            Diagnosis Details
+        </h1>
+    </div>
+
+    <div class="detail-container">
+        <!-- Image Section -->
+        <div class="detail-card">
+            <h3 class="card-title">
+                <i class="fas fa-image"></i>
+                Analyzed Image
+            </h3>
+            <div style="text-align: center;">
+                <img src="{{ diagnosis.image.url }}" alt="Diagnosis Image" class="diagnosis-image">
+                <div class="diagnosis-badge {% if 'healthy' in diagnosis.disease_name|lower %}healthy{% else %}disease{% endif %}">
+                    {{ diagnosis.disease_name }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div class="detail-card">
+            <h3 class="card-title">
+                <i class="fas fa-chart-line"></i>
+                Analysis Results
+            </h3>
+            
+            <div class="confidence-section">
+                <div class="confidence-meter">
+                    <div class="confidence-fill" style="width: {{ diagnosis.confidence }}%"></div>
+                </div>
+                <div class="confidence-text">Confidence: {{ diagnosis.confidence|floatformat:1 }}%</div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Analysis Date</div>
+                    <div class="info-value">{{ diagnosis.timestamp|date:"F d, Y" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Analysis Time</div>
+                    <div class="info-value">{{ diagnosis.timestamp|time:"g:i A" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Analyzed By</div>
+                    <div class="info-value">{{ diagnosis.user.get_full_name|default:diagnosis.user.username }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Result Type</div>
+                    <div class="info-value">
+                        {% if 'healthy' in diagnosis.disease_name|lower %}
+                            <span style="color: #28a745;">✓ Healthy</span>
+                        {% else %}
+                            <span style="color: #dc3545;">⚠ Disease Detected</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations-section">
+            <h2 class="section-title">
+                <i class="fas fa-lightbulb"></i>
+                Expert Recommendations
+            </h2>
+            
+            {% if 'healthy' not in diagnosis.disease_name|lower %}
+                <div class="recommendation-category">
+                    <h3 class="category-title treatment">Treatment Recommendations</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Isolate affected birds immediately to prevent spread</li>
+                        <li class="recommendation-item">Consult with a veterinarian for proper diagnosis and treatment plan</li>
+                        <li class="recommendation-item">Administer appropriate medication as prescribed by veterinarian</li>
+                        <li class="recommendation-item">Monitor bird's condition closely and document progress</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation-category">
+                    <h3 class="category-title prevention">Prevention Measures</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Maintain proper hygiene and sanitation in the coop</li>
+                        <li class="recommendation-item">Ensure adequate ventilation to prevent moisture buildup</li>
+                        <li class="recommendation-item">Provide clean, fresh water and quality feed</li>
+                        <li class="recommendation-item">Implement regular health checks and monitoring</li>
+                        <li class="recommendation-item">Follow proper vaccination schedules</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation-category">
+                    <h3 class="category-title immediate">Immediate Actions</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Clean and disinfect the affected area thoroughly</li>
+                        <li class="recommendation-item">Remove contaminated bedding and replace with fresh material</li>
+                        <li class="recommendation-item">Increase observation frequency for all birds in the flock</li>
+                        <li class="recommendation-item">Contact veterinary services for professional consultation</li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="recommendation-category">
+                    <h3 class="category-title prevention">Maintain Good Health</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Continue current feeding and care practices</li>
+                        <li class="recommendation-item">Maintain regular cleaning schedule</li>
+                        <li class="recommendation-item">Monitor birds for any changes in behavior or droppings</li>
+                        <li class="recommendation-item">Keep vaccination schedule up to date</li>
+                        <li class="recommendation-item">Ensure adequate nutrition and clean water supply</li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section">
+            <div class="action-buttons">
+                <a href="{% url 'diagnosis:upload_predict' %}" class="btn btn-primary">
+                    <i class="fas fa-camera"></i> New Analysis
+                </a>
+                <a href="{% url 'diagnosis:reanalyze' diagnosis.id %}" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Re-analyze Image
+                </a>
+                <a href="{% url 'diagnosis:history' %}" class="btn btn-info">
+                    <i class="fas fa-history"></i> Back to History
+                </a>
+                <a href="{% url 'chat:dashboard' %}" class="btn btn-warning">
+                    <i class="fas fa-comments"></i> Consult Expert
+                </a>
+            </div>
+        </div>
+
+        <!-- Similar Diagnoses Timeline -->
+        {% if similar_diagnoses %}
+        <div class="timeline-section">
+            <h2 class="section-title">
+                <i class="fas fa-clock"></i>
+                Recent Similar Diagnoses
+            </h2>
+            
+            {% for similar in similar_diagnoses %}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{ similar.timestamp|date:"M d, Y" }}</div>
+                    <div class="timeline-content">
+                        <strong>{{ similar.disease_name }}</strong> - Confidence: {{ similar.confidence|floatformat:1 }}%
+                    </div>
+                    <a href="{% url 'diagnosis:detail' similar.id %}" class="btn btn-sm btn-secondary">View</a>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate confidence meter
+    const confidenceFill = document.querySelector('.confidence-fill');
+    if (confidenceFill) {
+        const confidence = {{ diagnosis.confidence }};
+        confidenceFill.style.width = '0%';
+        setTimeout(() => {
+            confidenceFill.style.width = confidence + '%';
+        }, 500);
+    }
+    
+    // Add animation classes
+    const cards = document.querySelectorAll('.detail-card, .recommendations-section, .timeline-section');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 200 * index);
+    });
+});
+</script>
+{% endblock %}

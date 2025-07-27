@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 from .forms import SignUpForm, ProfileEditForm
@@ -12,9 +12,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
-from django.db.models import Count, Q
-from django.utils import timezone
+from django.db.models import Q, Avg, Count
 from datetime import datetime, timedelta
+from diagnosis.models import Diagnosis
+from functools import wraps  # Add this import
 
 #for user management
 from django.contrib.auth import get_user_model
@@ -22,9 +23,6 @@ User = get_user_model()
 from .forms import FarmerCreationForm
 from django import forms
 from .forms import FarmerForm
-from django.shortcuts import get_object_or_404
-from functools import wraps
-from diagnosis.models import Diagnosis
 
 #decorator to check if user is admin
 def admin_required(view_func):
@@ -81,6 +79,46 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
         # Return the current user's profile
         return self.request.user
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get user's diagnosis statistics
+        user_diagnoses = Diagnosis.objects.filter(user=self.request.user)
+        total_diagnoses = user_diagnoses.count()
+        
+        # This month's diagnoses
+        this_month_diagnoses = user_diagnoses.filter(
+            timestamp__month=datetime.now().month,
+            timestamp__year=datetime.now().year
+        ).count()
+        
+        # Calculate average confidence as accuracy rate
+        avg_confidence = user_diagnoses.aggregate(avg=Avg('confidence'))['avg']
+        accuracy_rate = round(avg_confidence) if avg_confidence else 0
+        
+        # Get healthy vs diseased counts
+        healthy_count = user_diagnoses.filter(
+            Q(disease_name__icontains='healthy')
+        ).count()
+        
+        diseased_count = total_diagnoses - healthy_count
+        
+        # Get recent diagnoses for activity display
+        recent_diagnoses = user_diagnoses.order_by('-timestamp')[:5]
+        
+        # Add statistics to context
+        context.update({
+            'total_diagnoses': total_diagnoses,
+            'this_month_diagnoses': this_month_diagnoses,
+            'accuracy_rate': accuracy_rate,
+            'healthy_count': healthy_count,
+            'diseased_count': diseased_count,
+            'recent_diagnoses': recent_diagnoses,
+            'avg_confidence': avg_confidence,
+        })
+        
+        return context
+    
     def get_success_url(self):
         # Keep user on the same profile edit page
         return self.request.path  # This returns the current URL path
@@ -102,14 +140,39 @@ def dashboard(request):
     context = {}
 
     if user.role == 'FARMER':
+        from datetime import datetime, timedelta
+        
+        # Get all user diagnoses
         user_diagnoses = Diagnosis.objects.filter(user=user)
         total_diagnoses = user_diagnoses.count()
+        
+        # Calculate healthy vs diseased
         diseased_droppings = user_diagnoses.exclude(
             Q(disease_name__icontains='healthy') |
             Q(disease_name__icontains='no disease')
         ).count()
         healthy_droppings = total_diagnoses - diseased_droppings
+        
+        # Get recent activities (last 5 diagnoses)
         recent_activities = user_diagnoses.order_by('-timestamp')[:5]
+        
+        # Calculate this month's diagnoses
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+        this_month_diagnoses = user_diagnoses.filter(
+            timestamp__month=current_month,
+            timestamp__year=current_year
+        ).count()
+        
+        # Calculate average confidence
+        from django.db.models import Avg
+        avg_confidence = user_diagnoses.aggregate(avg=Avg('confidence'))['avg'] or 0
+        
+        # Calculate accuracy rate (for now, use confidence as proxy)
+        accuracy_rate = round(avg_confidence) if avg_confidence else 0
+        
+        # Count total uploads (same as diagnoses for farmers)
+        total_uploads = total_diagnoses
 
         context = {
             'user_type': 'farmer',
@@ -118,9 +181,12 @@ def dashboard(request):
             'diseased_droppings': diseased_droppings,
             'healthy_droppings': healthy_droppings,
             'recent_activities': recent_activities,
-            'total_farms': 1, # Placeholder for now
-            'total_uploads': total_diagnoses, # Same as diagnoses for farmer
-            'pending_tasks': diseased_droppings, # Diseased droppings can be considered pending tasks
+            'total_farms': 1,  # For now, assume each farmer has 1 farm
+            'total_uploads': total_uploads,
+            'pending_tasks': diseased_droppings,  # Diseased droppings can be considered pending tasks
+            'this_month_diagnoses': this_month_diagnoses,
+            'avg_confidence': avg_confidence,
+            'accuracy_rate': accuracy_rate,
         }
     elif user.role == 'ADMIN':
         total_users = User.objects.count()
@@ -280,22 +346,38 @@ def user_logout(request):
 @login_required
 def profile(request):
     """User profile view"""
-    from diagnosis.models import Diagnosis
-    from django.db.models import Count
-    from datetime import datetime
-    
     # Get user's diagnosis statistics
-    total_diagnoses = Diagnosis.objects.filter(user=request.user).count()
-    this_month_diagnoses = Diagnosis.objects.filter(
-        user=request.user,
+    user_diagnoses = Diagnosis.objects.filter(user=request.user)
+    total_diagnoses = user_diagnoses.count()
+    
+    # This month's diagnoses
+    this_month_diagnoses = user_diagnoses.filter(
         timestamp__month=datetime.now().month,
         timestamp__year=datetime.now().year
     ).count()
     
+    # Calculate average confidence as accuracy rate
+    avg_confidence = user_diagnoses.aggregate(avg=Avg('confidence'))['avg']
+    accuracy_rate = round(avg_confidence) if avg_confidence else 0
+    
+    # Get healthy vs diseased counts
+    healthy_count = user_diagnoses.filter(
+        Q(disease_name__icontains='healthy')
+    ).count()
+    
+    diseased_count = total_diagnoses - healthy_count
+    
+    # Get recent diagnoses for activity display
+    recent_diagnoses = user_diagnoses.order_by('-timestamp')[:5]
+    
     context = {
         'total_diagnoses': total_diagnoses,
         'this_month_diagnoses': this_month_diagnoses,
-        'accuracy_rate': 95,  # You can calculate this based on your data
+        'accuracy_rate': accuracy_rate,
+        'healthy_count': healthy_count,
+        'diseased_count': diseased_count,
+        'recent_diagnoses': recent_diagnoses,
+        'avg_confidence': avg_confidence,
     }
     
-    return render(request, 'users/profile.html', context)
+    return render(request, 'profile_edit.html', context)  # Changed to use the same template

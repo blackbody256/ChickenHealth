@@ -505,6 +505,114 @@
             font-size: 2rem;
         }
     }
+
+    .activity-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        transition: background-color 0.2s ease;
+    }
+
+    .activity-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        flex-shrink: 0;
+        font-size: 1.2rem;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-detail {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.8rem;
+        color: #999;
+    }
+
+    .activity-action {
+        flex-shrink: 0;
+    }
+
+    .btn-small {
+        padding: 0.25rem 0.75rem;
+        background: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-small:hover {
+        background: #218838;
+        text-decoration: none;
+        color: white;
+    }
+
+    .health-stats {
+        margin: 1rem 0;
+    }
+
+    .health-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .health-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .health-value {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .progress-overview {
+        margin-top: 1rem;
+    }
+
+    .progress-bar {
+        background: #e9ecef;
+        border-radius: 10px;
+        height: 8px;
+        margin-bottom: 0.5rem;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
 </style>
 
 <div class="dashboard-container">
@@ -531,34 +639,107 @@
             <p class="stat-subtext">Images uploaded</p>
         </div>
         <div class="stat-card">
-            <h4><i class="fas fa-tasks"></i> Pending Tasks</h4>
-            <p class="stat-value">{{ pending_tasks|default:"0" }}</p>
+            <h4><i class="fas fa-check-circle"></i> Healthy Results</h4>
+            <p class="stat-value">{{ healthy_droppings|default:"0" }}</p>
+            <p class="stat-subtext">Healthy diagnoses</p>
+        </div>
+        <div class="stat-card">
+            <h4><i class="fas fa-exclamation-triangle"></i> Disease Detected</h4>
+            <p class="stat-value">{{ diseased_droppings|default:"0" }}</p>
             <p class="stat-subtext">Requires attention</p>
+        </div>
+        <div class="stat-card">
+            <h4><i class="fas fa-calendar-month"></i> This Month</h4>
+            <p class="stat-value">{{ this_month_diagnoses|default:"0" }}</p>
+            <p class="stat-subtext">Recent diagnoses</p>
         </div>
     </div>
 
     <div class="main-grid">
         <div class="recent-activities">
             <h3>Recent Activities</h3>
-            <div class="empty-state">
-                <i class="fas fa-chart-line"></i>
-                <h4>Start Your Journey</h4>
-                <p>Begin using the platform to see your activities and insights here.</p>
-            </div>
-            <a href="{% url 'diagnosis:index' %}" class="view-all">Start Diagnosis</a>
+            {% if recent_activities %}
+                <ul class="activity-list">
+                    {% for activity in recent_activities %}
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                {% if 'healthy' in activity.disease_name|lower %}
+                                    <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">{{ activity.disease_name }}</div>
+                                <div class="activity-detail">Confidence: {{ activity.confidence|floatformat:1 }}%</div>
+                                <div class="activity-time">{{ activity.timestamp|timesince }} ago</div>
+                            </div>
+                            <div class="activity-action">
+                                <a href="{% url 'diagnosis:detail' activity.id %}" class="btn-small">View</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'diagnosis:history' %}" class="view-all">View All History</a>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Start Your Journey</h4>
+                    <p>Begin using the platform to see your activities and insights here.</p>
+                </div>
+                <a href="{% url 'diagnosis:upload_predict' %}" class="view-all">Start Diagnosis</a>
+            {% endif %}
         </div>
 
         <div class="sidebar-cards">
             <div class="card">
-                <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                <h3><i class="fas fa-chart-pie"></i> Health Overview</h3>
+                <div class="health-stats">
+                    <div class="health-stat">
+                        <span class="health-label">Healthy</span>
+                        <span class="health-value" style="color: #28a745;">{{ healthy_droppings|default:"0" }}</span>
+                    </div>
+                    <div class="health-stat">
+                        <span class="health-label">Disease Detected</span>
+                        <span class="health-value" style="color: #dc3545;">{{ diseased_droppings|default:"0" }}</span>
+                    </div>
+                    <div class="health-stat">
+                        <span class="health-label">Accuracy Rate</span>
+                        <span class="health-value" style="color: #17a2b8;">{{ accuracy_rate|default:"0" }}%</span>
+                    </div>
+                </div>
+                <div class="progress-overview">
+                    {% if total_diagnoses > 0 %}
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio healthy_droppings total_diagnoses 100 %}%; background: #28a745;"></div>
+                        </div>
+                        <small>{{ healthy_droppings }} of {{ total_diagnoses }} diagnoses are healthy</small>
+                    {% else %}
+                        <p style="color: #6c757d; font-size: 0.9rem;">No diagnoses yet</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-rocket"></i> Quick Actions</h3>
                 <ul class="tips-list">
                     <li>
-                        <i class="fas fa-camera"></i>
-                        <span>Take photos of your chicken droppings</span>
+                        <a href="{% url 'diagnosis:upload_predict' %}" class="action-btn">
+                            <i class="fas fa-camera"></i>
+                            <span>New Diagnosis</span>
+                        </a>
                     </li>
                     <li>
-                        <i class="fas fa-search"></i>
-                        <span>Get instant disease diagnosis</span>
+                        <a href="{% url 'diagnosis:history' %}" class="action-btn">
+                            <i class="fas fa-history"></i>
+                            <span>View History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'chat:dashboard' %}" class="action-btn">
+                            <i class="fas fa-comments"></i>
+                            <span>Expert Chat</span>
+                        </a>
                     </li>
                 </ul>
             </div>

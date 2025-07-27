@@ -152,6 +152,60 @@
         font-weight: 500;
     }
 
+    .recent-activity-list {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .recent-activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        transition: background-color 0.2s ease;
+    }
+
+    .recent-activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .recent-activity-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .activity-icon {
+        flex-shrink: 0;
+        font-size: 1.1rem;
+    }
+
+    .activity-info {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-meta {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .activity-link {
+        color: #28a745;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: color 0.2s ease;
+    }
+
+    .activity-link:hover {
+        color: #20c997;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .profile-container {
@@ -263,19 +317,55 @@
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-value">{{ accuracy_rate|default:"95" }}%</div>
+                    <div class="stat-value">{{ accuracy_rate|default:"0" }}%</div>
                     <div class="stat-label">Accuracy Rate</div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-value">{{ last_login|date:"M d"|default:"Today" }}</div>
+                    <div class="stat-value">{{ healthy_count|default:"0" }}</div>
+                    <div class="stat-label">Healthy Results</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">{{ diseased_count|default:"0" }}</div>
+                    <div class="stat-label">Disease Detected</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">{{ user.last_login|date:"M d"|default:"Today" }}</div>
                     <div class="stat-label">Last Login</div>
                 </div>
             </div>
 
+            {% if recent_diagnoses %}
+                <div style="margin-top: 2rem;">
+                    <h4 style="color: #2c3e50; margin-bottom: 1rem;">Recent Activity</h4>
+                    <div class="recent-activity-list">
+                        {% for diagnosis in recent_diagnoses %}
+                            <div class="recent-activity-item">
+                                <div class="activity-icon">
+                                    {% if 'healthy' in diagnosis.disease_name|lower %}
+                                        <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                    {% else %}
+                                        <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="activity-info">
+                                    <div class="activity-title">{{ diagnosis.disease_name }}</div>
+                                    <div class="activity-meta">{{ diagnosis.timestamp|date:"M d, Y" }} - {{ diagnosis.confidence|floatformat:1 }}% confidence</div>
+                                </div>
+                                <a href="{% url 'diagnosis:detail' diagnosis.id %}" class="activity-link">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div style="margin-top: 2rem;">
                 <a href="{% url 'diagnosis:history' %}" class="btn btn-primary">
-                    <i class="fas fa-history"></i> View History
+                    <i class="fas fa-history"></i> View Full History
                 </a>
                 
                 <a href="{% url 'diagnosis:upload_predict' %}" class="btn btn-secondary">

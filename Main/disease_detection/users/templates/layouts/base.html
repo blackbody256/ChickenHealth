@@ -313,14 +313,22 @@
                         <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
                         <li><a href="{% url 'users:manage_farmers' %}" data-page="manage_farmers"><i class="fas fa-users"></i> Manage Farmers</a></li>
                         <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
+                        <li><a href="{% url 'diagnosis:history' %}" data-page="history"><i class="fas fa-history"></i> Diagnosis History</a></li>
+                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat"><i class="fas fa-comments"></i> Expert Chat</a></li>
                     {% elif user.role == 'VET' %}
                         <li><a href="{% url 'users:vet_dashboard' %}" data-page="vet_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                         <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
                         <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
+                        <li><a href="{% url 'diagnosis:history' %}" data-page="history"><i class="fas fa-history"></i> Diagnosis History</a></li>
+                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat"><i class="fas fa-comments"></i> Expert Chat</a></li>
+                        <li><a href="{% url 'vet:dataset_list' %}" data-page="vet_dataset_list"><i class="fas fa-database"></i> Datasets</a></li>
+                        <li><a href="{% url 'vet:report' %}" data-page="vet_report"><i class="fas fa-chart-line"></i> Reports</a></li>
                     {% else %}
                         <li><a href="{% url 'users:dashboard' %}" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                         <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
                         <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
+                        <li><a href="{% url 'diagnosis:history' %}" data-page="history"><i class="fas fa-history"></i> Diagnosis History</a></li>
+                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat"><i class="fas fa-comments"></i> Expert Chat</a></li>
                     {% endif %}
                     <li>
                         <form action="{% url 'users:logout' %}" method="post">
@@ -365,6 +373,8 @@
                 '/users/profile/': 'profile_edit',
                 '/users/manage-farmers/': 'manage_farmers',
                 '/diagnosis/diagnose/': 'diagnose',
+                '/diagnosis/history/': 'history',
+                '/chat/': 'chat',
                 '/administrator/upload/': 'upload_dataset',
                 '/administrator/datasets/': 'dataset_list',
                 
@@ -372,7 +382,7 @@
                 '/users/vet-dashboard/': 'vet_dashboard',
                 '/vet/list/': 'vet_dataset_list',
                 '/vet/report/': 'vet_report',
-                '/chat/': 'chat_dashboard',
+                '/chat/dashboard/': 'chat',
                 
                 // Farmer URLs
                 '/users/dashboard/': 'dashboard',
@@ -399,10 +409,28 @@
                 
                 // Special handling for diagnosis pages
                 if (dataPage === 'diagnose' && (
-                    currentPath.includes('/diagnosis/') || 
-                    currentPath.startsWith('/diagnosis')
+                    currentPath.includes('/diagnosis/') && 
+                    !currentPath.includes('/diagnosis/history') &&
+                    !currentPath.includes('/diagnosis/detail')
                 )) {
                     console.log(`✅ Diagnosis match found: ${dataPage}`);
+                    return true;
+                }
+                
+                // Special handling for history pages
+                if (dataPage === 'history' && (
+                    currentPath.includes('/diagnosis/history') || 
+                    currentPath.includes('/diagnosis/detail')
+                )) {
+                    console.log(`✅ History match found: ${dataPage}`);
+                    return true;
+                }
+                
+                // Special handling for chat pages
+                if (dataPage === 'chat' && (
+                    currentPath.includes('/chat/')
+                )) {
+                    console.log(`✅ Chat match found: ${dataPage}`);
                     return true;
                 }
                 
