@@ -99,10 +99,12 @@ def load_model():
         model_path = os.path.join(settings.BASE_DIR, '..', 'efficientnetb3-Chicken Disease-98.27.h5')
         model = tf.keras.models.load_model(model_path, compile=False)
 
+@login_required
 def upload_predict(request):
+    """Handle image upload and prediction"""
     load_model()  # Load the model if it's not already loaded
 
-    if request.method == 'POST' and request.FILES['image']:
+    if request.method == 'POST' and request.FILES.get('image'):
         # Get the uploaded image
         uploaded_image = request.FILES['image']
         fs = FileSystemStorage()
@@ -130,8 +132,8 @@ def upload_predict(request):
                 confidence=confidence
             )
 
-        # Redirect to results page with data
-        return redirect('results_view',
+        # Redirect to results page with data - FIXED: Added namespace
+        return redirect('diagnosis:results_view',
                         predicted_class=predicted_class,
                         confidence=f'{confidence:.2f}%',
                         uploaded_image_url=uploaded_image_url)

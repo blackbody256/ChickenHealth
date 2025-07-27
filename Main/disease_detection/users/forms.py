@@ -7,14 +7,41 @@ class SignUpForm(UserCreationForm):
     
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'role')
+        fields = ('username', 'first_name', 'last_name', 'email', 'role', 'password1', 'password2')  # Added password fields
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['role'].choices = User.ROLE_CHOICES
+        
+        # Add CSS classes and placeholders
+        self.fields['username'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': 'Enter username'
+        })
+        self.fields['first_name'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': 'Enter first name'
+        })
+        self.fields['last_name'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': 'Enter last name'
+        })
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': 'Enter email address'
+        })
+        self.fields['password1'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': 'Enter password'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': 'Confirm password'
+        })
+        self.fields['role'].widget.attrs.update({
+            'class': 'form-input'
+        })
 
-
-    
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']

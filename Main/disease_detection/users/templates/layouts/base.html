@@ -312,40 +312,22 @@
                         <li><a href="{% url 'users:admin_dashboard' %}" data-page="admin_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                         <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
                         <li><a href="{% url 'users:manage_farmers' %}" data-page="manage_farmers"><i class="fas fa-users"></i> Manage Farmers</a></li>
-                        <li><a href="{% url 'diagnosis:diagnose' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
-                        <li><a href="{% url 'administrator:upload_dataset' %}" data-page="upload_dataset"><i class="fas fa-upload"></i> Upload Dataset</a></li>
-                        <li><a href="{% url 'administrator:dataset_list' %}" data-page="dataset_list"><i class="fas fa-folder"></i> Manage Datasets</a></li>
-                        <li>
-                            <form action="{% url 'users:logout' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                            </form>
-                        </li>
+                        <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
                     {% elif user.role == 'VET' %}
                         <li><a href="{% url 'users:vet_dashboard' %}" data-page="vet_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                        <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
-                        <li><a href="{% url 'diagnosis:diagnose' %}" data-page="diagnose"><i class="fas fa-bug"></i> Assist Diagnosis</a></li>
-                        <li><a href="{% url 'vet:dataset_list' %}" data-page="vet_dataset_list"><i class="fas fa-file-alt"></i> View Datasets</a></li>
-                        <li><a href="{% url 'vet:report' %}" data-page="vet_report"><i class="fas fa-eye"></i> Reports</a></li>
-                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat_dashboard"><i class="fas fa-comment"></i> Chat</a></li>
-                        <li>
-                            <form action="{% url 'users:logout' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                            </form>
-                        </li>
+                        <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
+                        <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
                     {% else %}
                         <li><a href="{% url 'users:dashboard' %}" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                         <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
-                        <li><a href="{% url 'diagnosis:diagnose' %}" data-page="diagnose"><i class="fas fa-bug"></i> Diagnose</a></li>
-                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat_dashboard"><i class="fas fa-comment"></i> Message</a></li>
-                        <li>
-                            <form action="{% url 'users:logout' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                            </form>
-                        </li>
+                        <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
                     {% endif %}
+                    <li>
+                        <form action="{% url 'users:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </form>
+                    </li>
                 </ul>
             </aside>
             {% endif %}

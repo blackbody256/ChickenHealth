@@ -276,3 +276,26 @@ def user_logout(request):
     logout(request)
     messages.success(request, 'You have been successfully logged out.')
     return redirect('users:home')
+
+@login_required
+def profile(request):
+    """User profile view"""
+    from diagnosis.models import Diagnosis
+    from django.db.models import Count
+    from datetime import datetime
+    
+    # Get user's diagnosis statistics
+    total_diagnoses = Diagnosis.objects.filter(user=request.user).count()
+    this_month_diagnoses = Diagnosis.objects.filter(
+        user=request.user,
+        timestamp__month=datetime.now().month,
+        timestamp__year=datetime.now().year
+    ).count()
+    
+    context = {
+        'total_diagnoses': total_diagnoses,
+        'this_month_diagnoses': this_month_diagnoses,
+        'accuracy_rate': 95,  # You can calculate this based on your data
+    }
+    
+    return render(request, 'users/profile.html', context)

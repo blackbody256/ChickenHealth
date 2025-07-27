@@ -1,313 +1,287 @@
-{% extends "layouts/base.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
 
-{% block title %}Edit Profile - Chicken Disease Detection{% endblock %}
+{% block title %}My Profile - Chicken Health{% endblock %}
 
 {% block content %}
 <style>
     .profile-section {
-        padding: 4rem 2rem;
-        background: #f4f6f5;
-        min-height: calc(100vh - 160px);
-    }
-    
-    .profile-container {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
-    }
-    
-    .profile-header {
-        background: white;
         padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
-        text-align: center;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
-    
-    .profile-avatar {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #2e7d32, #4caf50);
-        color: white;
-        border-radius: 50%;
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        font-weight: bold;
-        margin: 0 auto 1rem;
-    }
-    
-    .profile-header h1 {
-        color: #2d3748;
-        margin-bottom: 0.5rem;
-    }
-    
-    .role-badge {
-        background: #e8f5e8;
-        color: #2e7d32;
-        padding: 0.3rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: bold;
-        display: inline-block;
-    }
-    
-    .profile-form-card {
-        background: white;
-        padding: 2rem 2.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .form-section {
-        margin-bottom: 2rem;
-    }
-    
-    .form-section h3 {
-        color: #2d3748;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e8f5e8;
-    }
-    
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .form-group.full-width {
-        grid-column: 1 / -1;
-    }
-    
-    .form-group label {
-        font-weight: 500;
-        color: #2d3748;
-        margin-bottom: 0.5rem;
-    }
-    
-    .form-input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 0.9rem;
-        transition: border-color 0.2s;
-    }
-    
-    .form-input:focus {
-        outline: none;
-        border-color: #2e7d32;
-        box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.1);
-    }
-    
-    .form-input[readonly] {
-        background-color: #f8f9fa;
-        color: #6c757d;
-    }
-    
-    .help-text {
-        font-size: 0.8rem;
-        color: #666;
-        margin-top: 0.25rem;
-    }
-    
-    .form-actions {
-        display: flex;
         gap: 1rem;
-        justify-content: flex-end;
-        margin-top: 2rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
     }
-    
-    .btn {
-        padding: 0.75rem 2rem;
-        border: none;
-        border-radius: 5px;
-        font-weight: 500;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-        transition: all 0.2s;
+
+    .page-title i {
+        color: #28a745;
+        font-size: 2rem;
     }
-    
-    .btn-primary {
-        background: #2e7d32;
-        color: white;
+
+    .profile-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
     }
-    
-    .btn-primary:hover {
-        background: #1b5e20;
+
+    .profile-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(40, 167, 69, 0.08);
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        transition: all 0.3s ease;
     }
-    
-    .btn-secondary {
-        background: #6c757d;
-        color: white;
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(40, 167, 69, 0.15);
     }
-    
-    .btn-secondary:hover {
-        background: #545b62;
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
-    
-    .alert {
-        padding: 1rem;
-        border-radius: 5px;
+
+    .card-title i {
+        color: #28a745;
+        font-size: 1.3rem;
+    }
+
+    .profile-info {
         margin-bottom: 1rem;
     }
-    
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    
-    .alert-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    
-    .errorlist {
-        color: #dc3545;
-        font-size: 0.8rem;
-        margin-top: 0.25rem;
-        list-style: none;
-        padding: 0;
-    }
-    
-    .errorlist li {
+
+    .info-label {
+        font-weight: 600;
+        color: #2c3e50;
         margin-bottom: 0.25rem;
     }
-    
+
+    .info-value {
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        margin: 0.25rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: white;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: white;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .stat-card {
+        background: #f8f9fa;
+        border: 1px solid rgba(40, 167, 69, 0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        background: rgba(40, 167, 69, 0.05);
+        transform: translateY(-2px);
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-        .profile-section {
-            padding: 2rem 1rem;
-        }
-        
-        .form-grid {
+        .profile-container {
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 1.5rem;
         }
-        
-        .form-actions {
+
+        .profile-section {
+            padding: 1rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
             flex-direction: column;
+            gap: 0.5rem;
         }
-        
+
+        .profile-card {
+            padding: 1.5rem;
+        }
+
         .btn {
             width: 100%;
+            justify-content: center;
+            margin: 0.25rem 0;
         }
     }
 </style>
 
 <div class="profile-section">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-user-circle"></i>
+            My Profile
+        </h1>
+    </div>
+
     <div class="profile-container">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <div class="profile-avatar">
-                {{ user.first_name|first|default:user.username|first|upper }}
+        <!-- User Info Card -->
+        <div class="profile-card">
+            <h3 class="card-title">
+                <i class="fas fa-user"></i>
+                Personal Information
+            </h3>
+            
+            <div class="profile-info">
+                <div class="info-label">Username</div>
+                <div class="info-value">{{ user.username }}</div>
             </div>
-            <h1>{{ user.first_name }} {{ user.last_name|default:"" }}</h1>
-            <span class="role-badge">{{ user.role|capfirst }}</span>
+
+            <div class="profile-info">
+                <div class="info-label">Full Name</div>
+                <div class="info-value">{{ user.first_name }} {{ user.last_name }}</div>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ user.email }}</div>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-label">Role</div>
+                <div class="info-value">{{ user.get_role_display }}</div>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-label">Member Since</div>
+                <div class="info-value">{{ user.date_joined|date:"F Y" }}</div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
+                
+                <!-- Fixed: Use proper namespaced URLs based on user role -->
+                {% if user.role == 'ADMIN' %}
+                    <a href="{% url 'users:admin_dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                {% elif user.role == 'VET' %}
+                    <a href="{% url 'users:vet_dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                {% endif %}
+            </div>
         </div>
 
-        <!-- Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
+        <!-- Activity Stats Card -->
+        <div class="profile-card">
+            <h3 class="card-title">
+                <i class="fas fa-chart-bar"></i>
+                Activity Overview
+            </h3>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{ total_diagnoses|default:"0" }}</div>
+                    <div class="stat-label">Total Diagnoses</div>
                 </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- Profile Form -->
-        <div class="profile-form-card">
-            <form method="post">
-                {% csrf_token %}
                 
-                <!-- Personal Information Section -->
-                <div class="form-section">
-                    <h3>Personal Information</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="{{ form.first_name.id_for_label }}">First Name</label>
-                            {{ form.first_name }}
-                            {% if form.first_name.errors %}
-                                <ul class="errorlist">
-                                    {% for error in form.first_name.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-                            {{ form.last_name }}
-                            {% if form.last_name.errors %}
-                                <ul class="errorlist">
-                                    {% for error in form.last_name.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ this_month_diagnoses|default:"0" }}</div>
+                    <div class="stat-label">This Month</div>
                 </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">{{ accuracy_rate|default:"95" }}%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">{{ last_login|date:"M d"|default:"Today" }}</div>
+                    <div class="stat-label">Last Login</div>
+                </div>
+            </div>
 
-                <!-- Account Information Section -->
-                <div class="form-section">
-                    <h3>Account Information</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="{{ form.username.id_for_label }}">Username</label>
-                            {{ form.username }}
-                            {% if form.username.help_text %}
-                                <div class="help-text">{{ form.username.help_text }}</div>
-                            {% endif %}
-                            {% if form.username.errors %}
-                                <ul class="errorlist">
-                                    {% for error in form.username.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.email.id_for_label }}">Email Address</label>
-                            {{ form.email }}
-                            {% if form.email.errors %}
-                                <ul class="errorlist">
-                                    {% for error in form.email.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label>Account Role</label>
-                        <input type="text" class="form-input" value="{{ user.role|capfirst }}" readonly title="Account Role" placeholder="Account Role">
-                        <div class="help-text">Your account role cannot be changed. Contact an administrator if you need role changes.</div>
-                    </div>
-                </div>
-
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <a href="{% if user.role == 'ADMIN' %}{% url 'admin_dashboard' %}{% elif user.role == 'VET' %}{% url 'vet_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                </div>
-            </form>
+            <div style="margin-top: 2rem;">
+                <a href="{% url 'diagnosis:history' %}" class="btn btn-primary">
+                    <i class="fas fa-history"></i> View History
+                </a>
+                
+                <a href="{% url 'diagnosis:upload_predict' %}" class="btn btn-secondary">
+                    <i class="fas fa-search"></i> New Analysis
+                </a>
+            </div>
         </div>
     </div>
 </div>
