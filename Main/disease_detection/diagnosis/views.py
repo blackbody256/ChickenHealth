@@ -1,10 +1,13 @@
 import os
-from django.shortcuts import render, redirect, get_object_or_404
+import requests
+import tensorflow as tf
 from django.conf import settings
+from django.core.cache import cache
+import tempfile
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.efficientnet import preprocess_input
 import numpy as np
@@ -92,15 +95,78 @@ recommendations = {
     }
 }
 
-# Global variable for the model
+# Global variable to store the loaded model
 model = None
 
+def download_model_from_gdrive():
+    """Download model from Google Drive."""
+    # Your Google Drive file ID
+    file_id = "1ZSCsIN_61zK6-iSOfj6nRRYauyMMFz_3"
+    download_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+    
+    # Use temporary directory for model storage
+    model_path = os.path.join(tempfile.gettempdir(), 'efficientnetb3_model.h5')
+    
+    if not os.path.exists(model_path):
+        print("Downloading model from Google Drive...")
+        try:
+            # Handle large file download with session
+            session = requests.Session()
+            response = session.get(download_url, stream=True)
+            
+            # Check if we need to handle the download confirmation
+            if 'download_warning' in response.text:
+                # Get the download confirmation token
+                for line in response.text.split('\n'):
+                    if 'confirm=' in line:
+                        confirm_token = line.split('confirm=')[1].split('&')[0]
+                        break
+                
+                # Make the confirmed download request
+                params = {'confirm': confirm_token}
+                response = session.get(download_url, params=params, stream=True)
+            
+            response.raise_for_status()
+            
+            # Download the file
+            with open(model_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+            
+            print(f"Model downloaded successfully to {model_path}")
+            
+        except Exception as e:
+            print(f"Error downloading model: {e}")
+            raise
+    
+    return model_path
+
 def load_model():
-    """Loads the Keras model into a global variable."""
+    """Load the TensorFlow model."""
     global model
     if model is None:
-        model_path = os.path.join(settings.BASE_DIR, '..', 'efficientnetb3-Chicken Disease-98.27.h5')
-        model = tf.keras.models.load_model(model_path, compile=False)
+        try:
+            # Check if model is already cached
+            cached_model = cache.get('ml_model')
+            if cached_model is not None:
+                model = cached_model
+                print("Model loaded from cache")
+                return model
+            
+            # Download and load the model
+            model_path = download_model_from_gdrive()
+            model = tf.keras.models.load_model(model_path, compile=False)
+            
+            # Cache the model for 1 hour
+            cache.set('ml_model', model, 3600)
+            print("Model loaded and cached successfully!")
+            
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            raise
+    
+    return model
 
 @login_required
 def upload_predict(request):

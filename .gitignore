@@ -4,9 +4,10 @@
 ml_models/chicken_disease_model.h5
 
 # Django generated files
+*.log
+local_settings.py
 db.sqlite3
 db.sqlite3-journal
-*.log
 
 # Media files - User-uploaded content
 /media/
@@ -14,16 +15,18 @@ db.sqlite3-journal
 # Environment variables
 # Use a .env.example file to show developers what variables are needed.
 .env
-.env.*
-!/.env.example
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -37,29 +40,36 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# Virtual environment
-venv/
-env/
-.venv/
+# Static files
+staticfiles/
+
+# Machine Learning / AI models
+*.h5
+*.hdf5
+*.pkl
+*.joblib
 
 # IDE / Editor specific
 .vscode/
 .idea/
 *.swp
+*.swo
+*~
 
-# Machine Learning / AI models
-*.h5
-*.pkl
-*.joblib
-*.model
-*.weights
-*.pb
-*.ckpt
-*.tfrecords
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+django.log

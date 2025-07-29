@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: kukuintel
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn disease_detection.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: PYTHON_VERSION
+        value: 3.7.12
+    
+  - type: pserv
+    name: kukuintel-db
+    env: postgresql
+    runtime: docker
+    plan: free
+    region: oregon
+    ipAllowList: []
+
+databases:
+  - name: kukuintel
+    databaseName: kukuintel
+    user: kukuintel
