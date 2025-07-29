@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block title %}KukuIntel - AI Chicken Dropping Analysis{% endblock %}
 
@@ -38,7 +39,7 @@
     .hero-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        
+        background: linear-gradient(135deg, rgba(46, 125, 50, 0.8), rgba(76, 175, 80, 0.6));
         z-index: 1;
     }
     
@@ -217,38 +218,64 @@
     }
     
     .how-step {
+        flex: 1 1 200px;
+        min-width: 200px;
+        max-width: 300px;
         text-align: center;
-        max-width: 200px;
+        background: white;
+        padding: 2rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
     }
     
-    .circle {
-        width: 50px;
-        height: 50px;
-        background-color: #2e7d32;
+    .how-step:hover {
+        transform: translateY(-3px);
+    }
+    
+    .step-number {
+        background: linear-gradient(135deg, #2e7d32, #66bb6a);
         color: white;
-        font-weight: bold;
-        font-size: 1.2rem;
+        height: 48px;
+        width: 48px;
         border-radius: 50%;
         margin: 0 auto 1rem auto;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    .how-step h3 {
+        margin-bottom: 0.75rem;
+        color: #1b1b1b;
+    }
+    
+    .how-step p {
+        color: #5f5f5f;
+        line-height: 1.5;
+        font-size: 0.95rem;
     }
     
     /* User Types */
+    .user-types {
+        background-color: white;
+    }
+    
     .user-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 2rem;
-        max-width: 1100px;
-        margin: 2rem auto;
+        max-width: 900px;
+        margin: auto;
     }
     
     .user-card {
-        background: #fff;
-        padding: 2rem;
+        background: #ffffff;
         border-radius: 12px;
-        border: none;
+        padding: 2rem;
+        border: 1px solid #e0e0e0;
         box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
         text-align: center;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -365,87 +392,86 @@
             font-size: 2.5rem;
         }
         
-        .hero-content .tagline {
-            font-size: 1.2rem;
+        .feature-grid {
+            grid-template-columns: 1fr;
+            padding: 0 1rem;
+        }
+        
+        .how-grid {
+            flex-direction: column;
+            align-items: center;
         }
         
         .cta-buttons {
             flex-direction: column;
             align-items: center;
         }
-        
-        .cta .button {
-            width: 200px;
-            margin-bottom: 1rem;
-        }
     }
 </style>
 
-<!-- Hero Section -->
+<!-- Hero Section with Custom Background -->
 <section class="hero">
     <div class="hero-bg-wrapper">
-        {% load static %}
-        <img src="{% static 'images/agri-news-zida.jpeg' %}" alt="Chicken farm" class="hero-bg" />
-        <div class="hero-overlay"></div>
+        <img src="{% static 'media/kukubackground image.jpg' %}" alt="KukuIntel Background" class="hero-bg">
     </div>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1><span class="highlight">Welcome to KukuIntel</span></h1>
-        <p class="tagline">Empowering Poultry Farmers with AI-driven Dropping Analysis</p>
+        <h1>Welcome to <span class="highlight">KukuIntel</span></h1>
+        <p class="tagline">AI-Powered Chicken Health Detection</p>
         <p class="description">
-            Transform your poultry farming practices with cutting-edge AI technology that provides instant chicken dropping analysis, disease detection, and personalized recommendations.
+            Upload chicken dropping images for instant AI analysis. Get accurate health assessments, disease predictions, 
+            and expert recommendations to keep your flock healthy and productive.
         </p>
-        {% if not user.is_authenticated %}
-            <a href="{% url 'users:signup' %}" class="button">Get Started</a>
+        {% if user.is_authenticated %}
+            {% if user.role == 'FARMER' %}
+                <a href="{% url 'diagnosis:upload_predict' %}" class="button">Start Health Analysis</a>
+            {% elif user.role == 'VET' %}
+                <a href="{% url 'users:vet_dashboard' %}" class="button">Go to Dashboard</a>
+            {% elif user.role == 'ADMIN' %}
+                <a href="{% url 'users:admin_dashboard' %}" class="button">Admin Dashboard</a>
+            {% endif %}
         {% else %}
-            <a href="{% url 'users:dashboard' %}" class="button">Go to Dashboard</a>
+            <a href="{% url 'users:signup' %}" class="button">Get Started Free</a>
         {% endif %}
     </div>
 </section>
 
 <!-- Features Section -->
 <section class="features">
-    <h2>Powerful Features for Modern Poultry Farming</h2>
-    <p class="subtitle">Our AI-powered platform provides comprehensive tools to monitor, diagnose, and improve your flock's health.</p>
+    <h2>Why Choose KukuIntel?</h2>
+    <p class="subtitle">Advanced AI technology meets practical poultry farming solutions</p>
     
     <div class="feature-grid">
         <div class="feature-card animate-on-scroll">
             <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2Z" />
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9Z" /></svg>
             </div>
-            <h3>Image Upload & Analysis</h3>
-            <p>Upload chicken dropping images for instant AI-powered analysis and disease detection</p>
+            <h3>Instant AI Analysis</h3>
+            <p>Upload dropping images and get immediate health assessments powered by advanced machine learning algorithms.</p>
         </div>
         
         <div class="feature-card animate-on-scroll">
             <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M20 2h-4v2h4v4h2V4c0-1.1-.9-2-2-2ZM4 4h4V2H4c-1.1 0-2 .9-2 2v4h2V4Zm0 16v-4H2v4c0 1.1.9 2 2 2h4v-2H4Zm16 0h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4Zm-6-9h-4v2h4v3h-6V8H6v10h12V13h-4z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z" /></svg>
             </div>
-            <h3>Instant Diagnosis</h3>
-            <p>Get immediate chicken health assessments using advanced machine learning</p>
+            <h3>High Accuracy Detection</h3>
+            <p>Our EfficientNet model achieves 98.27% accuracy in detecting chicken diseases from dropping analysis.</p>
         </div>
         
         <div class="feature-card animate-on-scroll">
             <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M9 21h6v-1H9v1Zm7.2-3c-.2-1.3-.8-2.4-1.6-3.3C13.2 13.9 13 13 13 12V9c0-1.7-1.3-3-3-3S7 7.3 7 9v3c0 1-.2 1.9-.6 2.7-.8.9-1.4 2-1.6 3.3h11.4Z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M17,12C17,14.42 15.28,16.44 13,16.9V21H11V16.9C8.72,16.44 7,14.42 7,12C7,9.58 8.72,7.56 11,7.1V3H13V7.1C15.28,7.56 17,9.58 17,12M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" /></svg>
             </div>
-            <h3>Smart Recommendations</h3>
-            <p>Receive personalized treatment and care recommendations for your flock</p>
+            <h3>Expert Veterinarian Network</h3>
+            <p>Connect directly with certified veterinarians for professional consultations and treatment recommendations.</p>
         </div>
         
         <div class="feature-card animate-on-scroll">
             <div class="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M3 3v18h18V3H3Zm2 2h14v14H5V5Zm3 2v2h8V7H8Zm0 4v2h5v-2H8Zm0 4v2h6v-2H8Z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,1H5C3.89,1 3,1.89 3,3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V9M12,19L8,15L10.5,12.5L12,14L15.5,10.5L18,13L12,19Z" /></svg>
             </div>
-            <h3>Flock Health Tracking</h3>
-            <p>Monitor flock health trends over time with detailed analytics</p>
+            <h3>Historical Tracking</h3>
+            <p>Monitor your flock's health trends over time with comprehensive analysis history and progress tracking.</p>
         </div>
     </div>
 </section>
@@ -453,122 +479,97 @@
 <!-- How It Works Section -->
 <section class="how-it-works">
     <h2>How It Works</h2>
-    <p class="subtitle">Get started with KukuIntel in four simple steps and transform your poultry management.</p>
+    <p class="subtitle">Simple, fast, and accurate health detection in three easy steps</p>
+    
     <div class="how-grid animate-on-scroll">
         <div class="how-step">
-            <div class="circle">1</div>
-            <h3>Collect Droppings</h3>
-            <p>Collect fresh chicken droppings for analysis</p>
-        </div>
-        <div class="how-step">
-            <div class="circle">2</div>
+            <div class="step-number">1</div>
             <h3>Upload Image</h3>
-            <p>Take a photo of the droppings and upload it to our platform</p>
+            <p>Take a photo of chicken droppings using your phone or camera and upload it to our platform.</p>
         </div>
+        
         <div class="how-step">
-            <div class="circle">3</div>
-            <h3>Get Diagnosis</h3>
-            <p>Receive instant results with confidence scores and explanations</p>
+            <div class="step-number">2</div>
+            <h3>AI Analysis</h3>
+            <p>Our advanced AI model analyzes the image instantly, detecting health indicators and potential diseases.</p>
         </div>
+        
         <div class="how-step">
-            <div class="circle">4</div>
-            <h3>Take Action</h3>
-            <p>Follow personalized recommendations to improve flock health</p>
+            <div class="step-number">3</div>
+            <h3>Get Results</h3>
+            <p>Receive detailed health assessment, disease probability, and expert recommendations for your flock.</p>
         </div>
     </div>
 </section>
 
 <!-- User Types Section -->
 <section class="user-types">
-    <h2>Built for Poultry Professionals</h2>
-    <p class="subtitle">KukuIntel serves the entire poultry ecosystem with specialized tools for every role.</p>
+    <h2>Built for Everyone in Poultry Care</h2>
+    <p class="subtitle">Whether you're a farmer, veterinarian, or agricultural professional</p>
+    
     <div class="user-grid">
-        <!-- Farmer Card -->
         <div class="user-card animate-on-scroll">
             <div class="user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M12 2C9 2 6 4 6 7c0 2.3 2 4.5 6 6.3 4-1.8 6-4 6-6.3 0-3-3-5-6-5Zm-1 15H7v5h4v-5Zm3 0v5h4v-5h-4Zm-9 0H3v5h2v-5Zm14 0v5h2v-5h-2Z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" /></svg>
             </div>
             <h3>Farmers</h3>
-            <p>Optimize flock health and productivity with real-time disease monitoring</p>
+            <p>Monitor your flock's health daily with instant disease detection and prevention recommendations.</p>
         </div>
         
-        <!-- Vet Card -->
         <div class="user-card animate-on-scroll">
             <div class="user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M12 2a5 5 0 0 0-5 5c0 1.4.6 2.6 1.6 3.5C6.5 11.6 4 13.8 4 17h2c0-2.2 2.5-4 6-4s6 1.8 6 4h2c0-3.2-2.5-5.4-4.6-6.5A5 5 0 0 0 12 2Z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M19,19H5V5H19V19Z" /></svg>
             </div>
-            <h3>Vets</h3>
-            <p>Enhance diagnostic capabilities and provide better care with data-driven insights</p>
+            <h3>Veterinarians</h3>
+            <p>Enhance diagnostic capabilities with AI-powered analysis and provide better patient care remotely.</p>
         </div>
         
-        <!-- Admin Card -->
         <div class="user-card animate-on-scroll">
             <div class="user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
-                    <path d="M3 3v18h18V3H3Zm2 2h14v14H5V5Zm3 2v2h8V7H8Zm0 4v2h5v-2H8Zm0 4v2h6v-2H8Z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z" /></svg>
             </div>
-            <h3>Admins</h3>
-            <p>Manage user access, monitor system performance, and oversee data</p>
+            <h3>Agricultural Professionals</h3>
+            <p>Access powerful tools for farm management, data analysis, and poultry health optimization.</p>
         </div>
     </div>
 </section>
 
 <!-- CTA Section -->
 <section class="cta animate-on-scroll">
-    <h2>Ready to Transform Your Poultry Farming?</h2>
-    <p>Join thousands of farmers already using KukuIntel to improve their flock health and reduce losses.</p>
+    <h2>Ready to Transform Your Poultry Health Management?</h2>
+    <p>Join thousands of farmers and veterinarians using KukuIntel for better flock health outcomes.</p>
+    
     <div class="cta-buttons">
         {% if not user.is_authenticated %}
-            <a href="{% url 'users:signup' %}" class="button white">Start Free Trial</a>
-            <a href="{% url 'users:login' %}" class="button outline">Login</a>
+            <a href="{% url 'users:signup' %}" class="button white">Start Free Today</a>
+            <a href="{% url 'users:about' %}" class="button outline">Learn More</a>
         {% else %}
-            <a href="{% url 'users:dashboard' %}" class="button white">Go to Dashboard</a>
-            <a href="#" class="button outline">Learn More</a>
+            <a href="{% url 'diagnosis:upload_predict' %}" class="button white">Analyze Now</a>
+            <a href="{% url 'users:profile' %}" class="button outline">View Profile</a>
         {% endif %}
     </div>
 </section>
 
 <script>
-// Smooth scroll animation for scroll-triggered elements
-document.addEventListener("DOMContentLoaded", function() {
-    const animatedItems = document.querySelectorAll('.animate-on-scroll');
-    
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+                entry.target.classList.add('animate-visible');
             }
         });
-    }, {
-        threshold: 0.15
-    });
-    
-    animatedItems.forEach(item => {
-        observer.observe(item);
-    });
-    
-    // Smooth scroll for get started button
-    const getStartedBtn = document.querySelector('.hero .button');
-    if (getStartedBtn) {
-        getStartedBtn.addEventListener('click', function(e) {
-            if (this.getAttribute('href') === '#') {
-                e.preventDefault();
-                window.scrollTo({
-                    top: document.body.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    }
-});
+    }, observerOptions);
 
-console.log("KukuIntel site loaded successfully!");
+    // Observe all elements with animation classes
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.animate-on-scroll, .feature-card, .user-card, .cta').forEach(el => {
+            observer.observe(el);
+        });
+    });
 </script>
-
 {% endblock %}

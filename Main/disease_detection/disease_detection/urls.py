@@ -22,12 +22,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('users.urls')),  # Changed from diagnosis.urls to users.urls for home
-    path('diagnosis/', include('diagnosis.urls')),  # Diagnosis app under /diagnosis/
-    path('users/', include('users.urls')),  # User authentication
-    path('administrator/', include('administrator.urls')),  # Admin dashboard
-    path('vet/', include('vet.urls')),  # Veterinarian features
-    path('chat/', include('chat.urls')),  # Chat functionality
+    path('', include('users.urls')),  # Root URLs handled by users app
+    path('diagnosis/', include('diagnosis.urls')),
+    path('administrator/', include('administrator.urls')),
+    path('vet/', include('vet.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 # Serve media files during development
