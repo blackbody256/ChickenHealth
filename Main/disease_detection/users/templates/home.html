@@ -39,7 +39,7 @@
     .hero-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(135deg, rgba(46, 125, 50, 0.8), rgba(76, 175, 80, 0.6));
+        
         z-index: 1;
     }
     
@@ -545,7 +545,7 @@
             <a href="{% url 'users:about' %}" class="button outline">Learn More</a>
         {% else %}
             <a href="{% url 'diagnosis:upload_predict' %}" class="button white">Analyze Now</a>
-            <a href="{% url 'users:profile' %}" class="button outline">View Profile</a>
+            <a href="{% url 'users:profile_edit' %}" class="button outline">Edit Profile</a>
         {% endif %}
     </div>
 </section>
