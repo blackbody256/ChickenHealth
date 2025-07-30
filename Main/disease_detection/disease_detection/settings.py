@@ -195,3 +195,40 @@ LOGGING = {
 
 # Model configuration
 MODEL_GDRIVE_ID = config('MODEL_GDRIVE_ID', default='1ZSCsIN_61zK6-iSOfj6nRRYauyMMFz_3')
+
+from .settings import *
+import os
+
+# Production settings for Cloud Run
+DEBUG = False
+
+# Cloud Run provides the PORT environment variable
+PORT = int(os.environ.get('PORT', 8080))
+
+# Allow Cloud Run hosts
+ALLOWED_HOSTS = ['*']  # More restrictive in production
+
+# Use Cloud SQL or your Supabase database
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+}
+
+# Static files with WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATIC_ROOT = '/app/staticfiles'
+
+# Media files (for user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/app/media'
+
+# Cache configuration for model loading
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+# Security settings
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
