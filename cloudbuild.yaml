@@ -42,7 +42,7 @@ images:
 
 # Substitution variables with actual values
 substitutions:
-  _MODEL_GDRIVE_ID: '1ZSCsIN_61zK6-iSOfj6nRRYauyMMFz_3'
+  
   _GS_BUCKET_NAME: 'chicken-health-app-storage'
   _DATABASE_URL: 'postgresql://postgres.ievgzwdtimuakjwaefgk:Bnn*8_Q7CbcZ&T6@aws-0-eu-north-1.pooler.supabase.com:6543/postgres'
   _SECRET_KEY: 'django-insecure-3a7hitoqn$vs2h*3!cosb7g^69)ptxlgtj&x1=$u6ckv$#2*nh'
