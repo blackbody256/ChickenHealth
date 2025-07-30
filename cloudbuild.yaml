@@ -9,9 +9,20 @@ steps:
       - '--build-arg'
       - 'MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID}'
 
-  # Push the Docker image to Artifact Registry
+  # Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest']
+    args: ['push', 'gcr.io/$PROJECT_ID/disease-detection:latest']
+
+  # Collect static files and upload to Google Cloud Storage
+  - name: 'gcr.io/$PROJECT_ID/disease-detection:latest'
+    entrypoint: 'python'
+    args: ['Main/disease_detection/manage.py', 'collectstatic', '--noinput']
+    env:
+      - 'GS_BUCKET_NAME=${_GS_BUCKET_NAME}'
+      - 'GS_PROJECT_ID=${PROJECT_ID}'
+      - 'DATABASE_URL=${_DATABASE_URL}'
+      - 'SECRET_KEY=${_SECRET_KEY}'
+      - 'DEBUG=False'
 
   # Deploy to Cloud Run from the new Artifact Registry image
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'

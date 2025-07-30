@@ -113,8 +113,10 @@
             display: flex;
             flex-direction: column;
             box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-            height: 100%;
-            min-height: 100vh;
+            height: 100vh; /* Fallback for browsers that don't support sticky */
+            position: sticky;
+            top: 0;
+            align-self: flex-start;
         }
 
         .sidebar .logo {

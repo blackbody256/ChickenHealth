@@ -127,8 +127,6 @@ def load_model():
 @login_required
 def upload_predict(request):
     """Handle image upload and prediction"""
-    load_model()  # Load the model if it's not already loaded
-
     if request.method == 'POST' and request.FILES.get('image'):
         # Get the uploaded image
         uploaded_image = request.FILES['image']
