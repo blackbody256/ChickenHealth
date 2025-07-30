@@ -26,12 +26,8 @@ COPY . .
 # Set work directory to the Django project
 WORKDIR /app/Main/disease_detection
 
-# Set Google Drive model ID as a build argument
-ARG MODEL_GDRIVE_ID
-ENV MODEL_GDRIVE_ID=${MODEL_GDRIVE_ID}
-
-# Download the model from Google Drive
-RUN if [ -n "$MODEL_GDRIVE_ID" ]; then         pip install gdown &&         gdown 'https://drive.google.com/uc?id=${MODEL_GDRIVE_ID}' -O model.h5 --no-cookies --continue;     else         echo "No model ID provided, skipping model download";         touch model.h5;     fi
+# Download the model from Google Cloud Storage
+RUN curl -L "https://storage.googleapis.com/chicken-health-app-storage/efficientnetb3-Chicken%20Disease-98.27.h5" -o model.h5
 
 # Create necessary directories
 RUN mkdir -p static/media/ staticfiles/ media/
