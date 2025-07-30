@@ -9,6 +9,7 @@ ENV PORT=8080
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
@@ -20,14 +21,22 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Set Google Drive model ID as a build argument
 ARG MODEL_GDRIVE_ID
+ENV MODEL_GDRIVE_ID=${MODEL_GDRIVE_ID}
+
 # Download the model from Google Drive
-RUN pip install gdown && gdown --id ${MODEL_GDRIVE_ID}
+RUN if [ -n "$MODEL_GDRIVE_ID" ]; then \
+        pip install gdown && \
+        gdown --id ${MODEL_GDRIVE_ID} -O model.h5; \
+    else \
+        echo "No model ID provided, skipping model download"; \
+        touch model.h5; \
+    fi
 
 # Copy project
 COPY . .
 
-# Create static files directory
-RUN mkdir -p static/media/
+# Create necessary directories
+RUN mkdir -p static/media/ staticfiles/ media/
 
 # Copy logo if exists or create placeholder
 RUN if [ -f "../betterkukulogo.jpg" ]; then \
@@ -42,10 +51,18 @@ RUN python manage.py collectstatic --noinput
 # Expose port
 EXPOSE 8080
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/ || exit 1
+
 # Run the application
 CMD exec gunicorn disease_detection.wsgi:application \
     --bind 0.0.0.0:$PORT \
     --workers 1 \
+    --worker-class sync \
     --timeout 300 \
     --max-requests 1000 \
-    --preload
+    --max-requests-jitter 100 \
+    --preload \
+    --access-logfile - \
+    --error-logfile -

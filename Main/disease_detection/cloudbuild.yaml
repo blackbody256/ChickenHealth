@@ -24,11 +24,19 @@ steps:
       - '--image'
       - 'gcr.io/$PROJECT_ID/disease-detection:latest'
       - '--region'
-      - 'us-central1'  # Choose your preferred region
+      - 'us-central1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      - '--set-env-vars=GS_BUCKET_NAME=${_GS_BUCKET_NAME},GS_PROJECT_ID=${PROJECT_ID},DATABASE_URL=${_DATABASE_URL},SECRET_KEY=${_SECRET_KEY},DEBUG=False'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '1'
+      - '--timeout'
+      - '300'
+      - '--max-instances'
+      - '10'
+      - '--set-env-vars=GS_BUCKET_NAME=${_GS_BUCKET_NAME},GS_PROJECT_ID=${PROJECT_ID},DATABASE_URL=${_DATABASE_URL},SECRET_KEY=${_SECRET_KEY},DEBUG=False,SUPABASE_DB_HOST=${_SUPABASE_DB_HOST},SUPABASE_DB_NAME=${_SUPABASE_DB_NAME},SUPABASE_DB_USER=${_SUPABASE_DB_USER},SUPABASE_DB_PASSWORD=${_SUPABASE_DB_PASSWORD},SUPABASE_DB_PORT=${_SUPABASE_DB_PORT},MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID},ALLOWED_HOSTS=.run.app,.googleusercontent.com'
 
 images:
   - 'gcr.io/$PROJECT_ID/disease-detection:latest'
@@ -36,6 +44,11 @@ images:
 # Substitution variables with actual values
 substitutions:
   _MODEL_GDRIVE_ID: '1ZSCsIN_61zK6-iSOfj6nRRYauyMMFz_3'
-  _GS_BUCKET_NAME: 'chicken-health-app-storage'    # Update this with your actual bucket name
+  _GS_BUCKET_NAME: 'chicken-health-app-storage'
   _DATABASE_URL: 'postgresql://postgres.ievgzwdtimuakjwaefgk:Bnn*8_Q7CbcZ&T6@aws-0-eu-north-1.pooler.supabase.com:6543/postgres'
   _SECRET_KEY: 'django-insecure-3a7hitoqn$vs2h*3!cosb7g^69)ptxlgtj&x1=$u6ckv$#2*nh'
+  _SUPABASE_DB_HOST: 'aws-0-eu-north-1.pooler.supabase.com'
+  _SUPABASE_DB_NAME: 'postgres'
+  _SUPABASE_DB_USER: 'postgres.ievgzwdtimuakjwaefgk'
+  _SUPABASE_DB_PASSWORD: 'Bnn*8_Q7CbcZ&T6'
+  _SUPABASE_DB_PORT: '6543'

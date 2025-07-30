@@ -19,9 +19,11 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 # Allowed hosts
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
-# Add Render hostname if in production
+# Add Cloud Run and other production hostnames
 if not DEBUG:
     ALLOWED_HOSTS.extend([
+        '.run.app',  # Google Cloud Run
+        '.googleusercontent.com',  # Cloud Run custom domains
         '.render.com',
         config('RENDER_EXTERNAL_HOSTNAME', default=''),
     ])
@@ -73,15 +75,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'disease_detection.wsgi.application'
 
 # Database
+# Use DATABASE_URL if available, otherwise use individual Supabase settings
 if config('DATABASE_URL', default=''):
     DATABASES = {
         'default': dj_database_url.parse(config('DATABASE_URL'))
     }
 else:
+    # Fallback to individual database settings
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('SUPABASE_DB_NAME', default='postgres'),
+            'USER': config('SUPABASE_DB_USER', default=''),
+            'PASSWORD': config('SUPABASE_DB_PASSWORD', default=''),
+            'HOST': config('SUPABASE_DB_HOST', default=''),
+            'PORT': config('SUPABASE_DB_PORT', default='6543'),
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
         }
     }
 
@@ -112,6 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Static files directories for development
 if DEBUG:
     STATICFILES_DIRS = [
         BASE_DIR / 'static',
@@ -123,13 +135,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Google Cloud Storage settings for production
 if not DEBUG:
+    # Google Cloud Storage configuration
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    GS_BUCKET_NAME = config('GS_BUCKET_NAME')
-    GS_PROJECT_ID = config('GS_PROJECT_ID')
-    # GOOGLE_APPLICATION_CREDENTIALS will be set in the Cloud Run environment
+    GS_BUCKET_NAME = config('GS_BUCKET_NAME', default='chicken-health-app-storage')
+    GS_PROJECT_ID = config('GS_PROJECT_ID', default='')
+    GS_DEFAULT_ACL = 'publicRead'
+    GS_FILE_OVERWRITE = False
+    GS_MAX_MEMORY_SIZE = 134217728  # 128 MB
+    
+    # Use the bucket for both static and media files
+    STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/static/'
+    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/media/'
 else:
-    # WhiteNoise configuration for static files in development
+    # WhiteNoise configuration for static files in development/staging
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Cache configuration (for model caching)
@@ -203,4 +222,8 @@ LOGGING = {
 
 # Model configuration
 MODEL_GDRIVE_ID = config('MODEL_GDRIVE_ID', default='1ZSCsIN_61zK6-iSOfj6nRRYauyMMFz_3')
+
+# File upload settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
 
