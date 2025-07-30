@@ -4,14 +4,14 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest' # <-- CHANGED
+      - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'
       - '.'
       - '--build-arg'
       - 'MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID}'
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'] # <-- CHANGED
+    args: ['push', 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest']
 
   # Deploy to Cloud Run from the new Artifact Registry image
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -21,9 +21,9 @@ steps:
       - 'deploy'
       - 'disease-detection'
       - '--image'
-      - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest' # <-- CHANGED
+      - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'
       - '--region'
-      - 'us-central1' # Note: your image is in us-east4 but you are deploying to us-central1. This is fine but keeping them in the same region can be slightly faster/cheaper.
+      - 'us-central1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
@@ -35,11 +35,12 @@ steps:
       - '300'
       - '--max-instances'
       - '10'
-      - '--set-env-vars=GS_BUCKET_NAME=${_GS_BUCKET_NAME},GS_PROJECT_ID=${PROJECT_ID},DATABASE_URL=${_DATABASE_URL},SECRET_KEY=${_SECRET_KEY},DEBUG=False,SUPABASE_DB_HOST=${_SUPABASE_DB_HOST},SUPABASE_DB_NAME=${_SUPABASE_DB_NAME},SUPABASE_DB_USER=${_SUPABASE_DB_USER},SUPABASE_DB_PASSWORD=${_SUPABASE_DB_PASSWORD},SUPABASE_DB_PORT=${_SUPABASE_DB_PORT},MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID},ALLOWED_HOSTS=.run.app,.googleusercontent.com'
+      # THE FIX IS ON THE LAST LINE OF THIS ARGUMENT
+      - '--set-env-vars=GS_BUCKET_NAME=${_GS_BUCKET_NAME},GS_PROJECT_ID=${PROJECT_ID},DATABASE_URL=${_DATABASE_URL},SECRET_KEY=${_SECRET_KEY},DEBUG=False,SUPABASE_DB_HOST=${_SUPABASE_DB_HOST},SUPABASE_DB_NAME=${_SUPABASE_DB_NAME},SUPABASE_DB_USER=${_SUPABASE_DB_USER},SUPABASE_DB_PASSWORD=${_SUPABASE_DB_PASSWORD},SUPABASE_DB_PORT=${_SUPABASE_DB_PORT},MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID},ALLOWED_HOSTS=".run.app,.googleusercontent.com"'
 
 # List the image to be pushed
 images:
-  - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest' # <-- CHANGED
+  - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'
 
 # Substitution variables with actual values
 substitutions:
