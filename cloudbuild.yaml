@@ -51,3 +51,7 @@ substitutions:
   _SUPABASE_DB_USER: 'postgres.ievgzwdtimuakjwaefgk'
   _SUPABASE_DB_PASSWORD: 'Bnn*8_Q7CbcZ&T6'
   _SUPABASE_DB_PORT: '6543'
+
+# ADD THIS BLOCK TO THE END OF YOUR CLOUDBUILD.YAML FILE
+options:
+  logging: CLOUD_LOGGING_ONLY
