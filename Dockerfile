@@ -31,13 +31,7 @@ ARG MODEL_GDRIVE_ID
 ENV MODEL_GDRIVE_ID=${MODEL_GDRIVE_ID}
 
 # Download the model from Google Drive
-RUN if [ -n "$MODEL_GDRIVE_ID" ]; then \
-        pip install gdown && \
-        gdown --id ${MODEL_GDRIVE_ID} -O model.h5; \
-    else \
-        echo "No model ID provided, skipping model download"; \
-        touch model.h5; \
-    fi
+RUN if [ -n "$MODEL_GDRIVE_ID" ]; then         pip install gdown &&         gdown --id ${MODEL_GDRIVE_ID} -O model.h5 --no-cookies --continue;     else         echo "No model ID provided, skipping model download";         touch model.h5;     fi
 
 # Create necessary directories
 RUN mkdir -p static/media/ staticfiles/ media/
