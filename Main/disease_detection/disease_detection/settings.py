@@ -117,12 +117,20 @@ if DEBUG:
         BASE_DIR / 'static',
     ]
 
-# WhiteNoise configuration for static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Google Cloud Storage settings for production
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = config('GS_BUCKET_NAME')
+    GS_PROJECT_ID = config('GS_PROJECT_ID')
+    # GOOGLE_APPLICATION_CREDENTIALS will be set in the Cloud Run environment
+else:
+    # WhiteNoise configuration for static files in development
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Cache configuration (for model caching)
 CACHES = {
@@ -196,39 +204,3 @@ LOGGING = {
 # Model configuration
 MODEL_GDRIVE_ID = config('MODEL_GDRIVE_ID', default='1ZSCsIN_61zK6-iSOfj6nRRYauyMMFz_3')
 
-from .settings import *
-import os
-
-# Production settings for Cloud Run
-DEBUG = False
-
-# Cloud Run provides the PORT environment variable
-PORT = int(os.environ.get('PORT', 8080))
-
-# Allow Cloud Run hosts
-ALLOWED_HOSTS = ['*']  # More restrictive in production
-
-# Use Cloud SQL or your Supabase database
-DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-}
-
-# Static files with WhiteNoise
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-STATIC_ROOT = '/app/staticfiles'
-
-# Media files (for user uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/app/media'
-
-# Cache configuration for model loading
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
-}
-
-# Security settings
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

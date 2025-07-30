@@ -18,11 +18,13 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Set Google Drive model ID as a build argument
+ARG MODEL_GDRIVE_ID
+# Download the model from Google Drive
+RUN pip install gdown && gdown --id ${MODEL_GDRIVE_ID}
+
 # Copy project
 COPY . .
-
-# Copy model file from parent directory
-COPY ../efficientnetb3-Chicken\ Disease-98.27.h5 /app/
 
 # Create static files directory
 RUN mkdir -p static/media/

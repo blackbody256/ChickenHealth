@@ -53,3 +53,5 @@ whitenoise==6.5.0
 wrapt==1.14.1
 zipp==3.15.0
 google-cloud-storage==2.10.0
+gdown==4.7.1
+django-storages[google]==1.14.2
