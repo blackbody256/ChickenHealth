@@ -10,14 +10,21 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     libpq-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app
 
 # Install Python dependencies
-COPY requirements.txt .
+COPY Main/disease_detection/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project
+COPY . .
+
+# Set work directory to the Django project
+WORKDIR /app/Main/disease_detection
 
 # Set Google Drive model ID as a build argument
 ARG MODEL_GDRIVE_ID
@@ -32,21 +39,11 @@ RUN if [ -n "$MODEL_GDRIVE_ID" ]; then \
         touch model.h5; \
     fi
 
-# Copy project
-COPY . .
-
 # Create necessary directories
 RUN mkdir -p static/media/ staticfiles/ media/
 
-# Copy logo if exists or create placeholder
-RUN if [ -f "../betterkukulogo.jpg" ]; then \
-        cp ../betterkukulogo.jpg static/media/betterkukulogo.jpg; \
-    else \
-        echo "KukuIntel Logo" > static/media/betterkukulogo.jpg; \
-    fi
-
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --settings=disease_detection.settings
 
 # Expose port
 EXPOSE 8080

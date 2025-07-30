@@ -8,7 +8,6 @@ steps:
       - '.'
       - '--build-arg'
       - 'MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID}'
-    dir: 'disease_detection'
 
   # Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
