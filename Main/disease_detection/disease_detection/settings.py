@@ -127,6 +127,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 if DEBUG:
     STATICFILES_DIRS = [
         BASE_DIR / 'static',
+        BASE_DIR / 'users/static',
     ]
 
 # Media files
