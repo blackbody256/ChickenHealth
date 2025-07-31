@@ -52,11 +52,12 @@ Data management relies on PostgreSQL databases hosted through Supabase, providin
 
 The deployment strategy utilizes Docker containerization to ensure consistent performance across different environments and facilitate seamless scaling as user demand increases. The cloud deployment configuration demonstrates sophisticated environment management with secure handling of sensitive information through Google Cloud's substitution variable system.
 
-![System Architecture Diagram Placeholder]
-
 ## Disease Detection Workflow and User Experience
 
 The disease detection process represents the core value proposition of KukuIntel, designed to be both scientifically rigorous and practically accessible for farmers with varying levels of technical expertise. The workflow begins with farmers capturing smartphone images of chicken droppings, which are then uploaded through the platform's intuitive interface.
+
+![Upload Interface](kuku/Upload%20image.png)
+*Figure 5: Image upload interface for disease detection*
 
 Upon image submission, the AI model performs rapid analysis, typically completing diagnosis within seconds of upload. The system provides comprehensive results including disease classification with confidence percentages, detailed treatment protocols, preventive measures for flock protection, and immediate action items for emergency situations.
 
@@ -64,23 +65,33 @@ The user experience prioritizes clarity and actionability, presenting complex ve
 
 Historical tracking capabilities allow farmers to monitor flock health trends over time, identifying patterns that may indicate environmental or management factors contributing to disease susceptibility. This longitudinal data proves invaluable for both farmers and consulting veterinarians in developing comprehensive flock health strategies.
 
-![Treatment Recommendations Interface Placeholder]
-
 ## Multi-User Platform Architecture
 
 KukuIntel's multi-user architecture recognizes that effective agricultural health management requires collaboration between multiple stakeholders, each with distinct needs and expertise levels. The platform facilitates seamless interaction between farmers, veterinarians, and system administrators while maintaining appropriate access controls and data privacy protections.
 
 The farmer interface emphasizes simplicity and immediate utility, providing essential tools for disease detection, treatment guidance, and flock management without overwhelming users with technical complexity. Farmers can access their complete analysis history, track treatment outcomes, and communicate directly with veterinary professionals for complex cases requiring expert consultation.
 
+![Farmer Dashboard](kuku/Farmer's%20dashboard.png)
+*Figure 6: Farmer dashboard interface showing analysis history and health monitoring*
+
 Veterinary professionals utilize advanced dashboard capabilities that provide comprehensive oversight of multiple farms and patients. The veterinary interface includes tools for remote consultation, detailed report generation, trend analysis across multiple flocks, and direct communication with farmers. This remote consultation capability significantly extends the reach of veterinary expertise, particularly valuable in regions where physical veterinary presence is limited.
+
+![Veterinarian Dashboard](kuku/Vet%20dashboard.png)
+*Figure 7: Veterinarian dashboard for managing multiple farms and consultations*
+
+![Veterinary Chat](kuku/vet%20chat.png)
+*Figure 8: Veterinary consultation chat interface*
 
 System administrators maintain platform integrity through comprehensive management tools covering user authentication, data quality assurance, AI model performance monitoring, and system analytics. Administrative capabilities include dataset management for ongoing model improvement, user support and training coordination, and platform configuration optimization.
 
-![Farmer Dashboard Placeholder]
+![Admin Dashboard](kuku/Admindashboard.png)
+*Figure 9: Administrator dashboard for system management*
 
-![Veterinarian Dashboard Placeholder]
+![Admin Managing Farmers](kuku/Admin%20managing%20farmers.png)
+*Figure 10: Admin interface for farmer management and support*
 
-![Admin Dashboard Placeholder]
+![Admin Chat](kuku/Chat%20for%20Admin.png)
+*Figure 11: Administrative communication interface*
 
 ## Market Analysis and Economic Context
 
@@ -100,6 +111,9 @@ Phase One focuses on artificial intelligence enhancement and expanded diagnostic
 
 The implementation of real-time video monitoring represents a significant technological advancement that will transform KukuIntel from a reactive diagnostic tool into a proactive health surveillance system. Computer vision algorithms will continuously analyze flock behavior, identifying subtle changes in movement patterns, feeding behaviors, and social interactions that may indicate early stages of disease development. This continuous monitoring capability will enable intervention at the earliest possible stages, potentially preventing disease outbreaks entirely rather than merely detecting them after symptoms appear.
 
+![Camera Tracking System](kuku/Camera%20tracking.jpeg)
+*Figure 12: Future camera tracking system for continuous monitoring*
+
 Phase Two introduces smart farm integration capabilities, transforming KukuIntel from a diagnostic tool into a comprehensive farm management system. Internet of Things sensor integration will provide continuous environmental monitoring, tracking temperature, humidity, air quality, and other factors affecting poultry health. Predictive analytics algorithms will analyze historical data patterns to forecast potential disease outbreaks before symptoms become apparent. Automated systems integration will enable intelligent control of feeding systems, water dispensers, and environmental controls based on real-time flock health data.
 
 The smart farm integration phase will establish KukuIntel as a central hub for all farm management activities, coordinating multiple technological systems to optimize poultry health and productivity. Environmental sensors will provide continuous data streams that feed into machine learning algorithms capable of identifying correlations between environmental conditions and disease susceptibility. This predictive capability will enable farmers to adjust environmental controls proactively, maintaining optimal conditions for flock health.
@@ -107,9 +121,6 @@ The smart farm integration phase will establish KukuIntel as a central hub for a
 Phase Three represents the evolution toward complete agricultural intelligence, incorporating advanced features such as nutritional optimization algorithms, genetic analysis for breeding guidance, and market intelligence for optimal sales timing. This comprehensive approach addresses all aspects of poultry farming operations, from day-old chick management through market-ready bird preparation.
 
 The nutritional optimization component will analyze individual bird growth patterns, feed conversion ratios, and health indicators to recommend personalized feeding strategies that maximize growth while minimizing feed costs. Genetic analysis capabilities will help farmers make informed breeding decisions, selecting birds with optimal disease resistance and productivity characteristics. Market intelligence features will integrate commodity pricing data, demand forecasts, and seasonal trends to recommend optimal timing for bird sales, maximizing revenue potential.
-
-![Future Vision - Smart Farm Integration](kuku/Camera%20tracking.jpeg)
-*Figure 5: Future camera tracking system for continuous monitoring*
 
 ## Specific Technological Advancements
 
@@ -151,7 +162,8 @@ Educational impact through platform usage will improve overall farm management p
 
 The broader economic impact extends beyond individual farms to rural communities and national agricultural productivity. Reduced livestock mortality rates contribute to food security, while improved farm profitability supports rural economic development and poverty reduction efforts.
 
-![Impact Statistics Placeholder]
+![Screenshot Interface](kuku/Screenshot%20from%202025-07-31%2016-04-45.png)
+*Figure 13: Platform interface showing real-time analysis results*
 
 ## Success Metrics and Performance Indicators
 
@@ -235,8 +247,6 @@ Behavioral analysis research focuses on identifying disease indicators through m
 
 Environmental correlation studies examine relationships between environmental conditions and disease development to improve predictive capabilities. Research includes sensor data analysis, weather pattern correlations, and environmental optimization recommendations.
 
-![Research Process Placeholder]
-
 ## Security, Privacy, and Reliability Framework
 
 Data protection and privacy considerations receive paramount attention throughout platform development and deployment. All data transmission utilizes advanced encryption protocols to protect sensitive information during upload and storage processes. Encryption standards include TLS 1.3 for data in transit and AES-256 for data at rest, ensuring comprehensive protection against unauthorized access.
@@ -276,8 +286,6 @@ KukuIntel embodies the principle that artificial intelligence serves humanity mo
 The platform's success will be measured not only in technical metrics and financial performance but in the transformed lives of farmers who achieve greater food security, economic stability, and agricultural sustainability through access to advanced health management tools. KukuIntel represents hope for rural communities that technology can be a force for empowerment and development rather than displacement and exclusion.
 
 As KukuIntel evolves from prototype to production deployment, the platform will continue to prioritize user needs, community impact, and sustainable development goals. The vision encompasses a future where every farmer, regardless of location or economic status, has access to the tools and knowledge necessary for successful agricultural enterprise.
-
-![Vision Statement Placeholder - Farmers using KukuIntel successfully]
 
 ---
 
