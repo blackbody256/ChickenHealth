@@ -41,9 +41,9 @@ steps:
       - '--memory'
       - '4Gi'
       - '--cpu'
-      - '1'
+      - '2'
       - '--timeout'
-      - '300'
+      - '600'
       - '--max-instances'
       - '10'
       # THE FIX IS HERE: Using ^--^ as the separator instead of commas
