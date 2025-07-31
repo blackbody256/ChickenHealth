@@ -34,7 +34,7 @@ steps:
       - '--image'
       - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'
       - '--region'
-      - 'us-central1'
+      - 'us-east4' # Corrected to match artifact registry region
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
@@ -43,15 +43,11 @@ steps:
       - '--memory'
       - '8Gi'
       - '--timeout'
-      - '600'
-      - '--health-check-timeout'
-      - '600'
+      - '900' # This is the correct flag for request timeout
       - '--max-instances'
       - '10'
-      - '--revision-timeout'
-      - '900'
-      # THE FIX IS HERE: Using ^--^ as the separator instead of commas
-      - '--set-env-vars=^--^GS_BUCKET_NAME=${_GS_BUCKET_NAME}--GS_PROJECT_ID=${PROJECT_ID}--DATABASE_URL=${_DATABASE_URL}--SECRET_KEY=${_SECRET_KEY}--DEBUG=False--SUPABASE_DB_HOST=${_SUPABASE_DB_HOST}--SUPABASE_DB_NAME=${_SUPABASE_DB_NAME}--SUPABASE_DB_USER=${_SUPABASE_DB_USER}--SUPABASE_DB_PASSWORD=${_SUPABASE_DB_PASSWORD}--SUPABASE_DB_PORT=${_SUPABASE_DB_PORT}--MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID}--ALLOWED_HOSTS=.run.app,.googleusercontent.com'
+      # THE FIX IS HERE: Removed invalid flags and corrected env var syntax
+      - '--set-env-vars=GS_BUCKET_NAME=${_GS_BUCKET_NAME},GS_PROJECT_ID=${PROJECT_ID},DATABASE_URL=${_DATABASE_URL},SECRET_KEY=${_SECRET_KEY},DEBUG=False,SUPABASE_DB_HOST=${_SUPABASE_DB_HOST},SUPABASE_DB_NAME=${_SUPABASE_DB_NAME},SUPABASE_DB_USER=${_SUPABASE_DB_USER},SUPABASE_DB_PASSWORD=${_SUPABASE_DB_PASSWORD},SUPABASE_DB_PORT=${_SUPABASE_DB_PORT},MODEL_GDRIVE_ID=${_MODEL_GDRIVE_ID},ALLOWED_HOSTS=.run.app,.googleusercontent.com'
 
 # List the image to be pushed
 images:
