@@ -6,9 +6,10 @@ class DiagnosisConfig(AppConfig):
     name = 'diagnosis'
 
     def ready(self):
-        # Avoid loading the model during management commands
-        if 'manage.py' in sys.argv:
+        # A check to prevent the model from loading during management commands
+        is_management_command = any('manage.py' in arg for arg in sys.argv)
+        if is_management_command:
             return
 
-        from . import views  # Import views here to avoid circular dependency
+        from . import views
         views.load_model()
