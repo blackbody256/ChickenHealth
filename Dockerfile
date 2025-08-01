@@ -2,14 +2,22 @@ FROM nvidia/cuda:11.4.3-base-ubuntu20.04
 
 # Install system dependencies and Python
 RUN apt-get update && apt-get install -y \
-    python3.7     python3-dev     build-essential     gcc     g++     libpq-dev     curl     git \
+    python3.8 \
+    python3-dev \
+    build-essential \
+    gcc \
+    g++ \
+    libpq-dev \
+    curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Set Python 3.7 as the default
-RUN ln -s /usr/bin/python3.7 /usr/bin/python
+# Set Python 3.8 as the default
+RUN ln -s /usr/bin/python3.8 /usr/bin/python
 
-# Install/upgrade pip for python3.7
-RUN python3.7 -m pip install --upgrade pip setuptools wheel
+# Install/upgrade pip for python3.8
+RUN python3.8 -m pip install --upgrade pip setuptools wheel
+
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
