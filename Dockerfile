@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pip for python3.7
-RUN curl https://bootstrap.pypa.io/get-pip.py | python3.7
+RUN curl https://bootstrap.pypa.io/get-pip.py | /usr/bin/python3.7
 
 # Set Python 3.7 as the default
 RUN ln -s /usr/bin/python3.7 /usr/bin/python
