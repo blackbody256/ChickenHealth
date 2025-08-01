@@ -1,10 +1,18 @@
 FROM nvidia/cuda:11.4.3-base-ubuntu20.04
 
 # Install Python and other dependencies
-RUN apt-get update && apt-get install -y     python3.7     python3-pip     git     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    python3.7 \
+    python3.7-distutils \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pip for python3.7
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3.7
 
 # Set Python 3.7 as the default
-RUN ln -s /usr/bin/python3.7 /usr/bin/python &&     ln -s /usr/bin/pip3 /usr/bin/pip
+RUN ln -s /usr/bin/python3.7 /usr/bin/python
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
