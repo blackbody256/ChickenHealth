@@ -11,10 +11,10 @@ steps:
 
   # Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-east4-docker.pkg.dev/kukuintel/disease-detection-repo/disease-detection:latest']
+    args: ['push', 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest']
 
   # Collect static files and upload to Google Cloud Storage
-  - name: 'us-east4-docker.pkg.dev/kukuintel/disease-detection-repo/disease-detection:latest'
+  - name: 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'
     entrypoint: 'python'
     args: ['Main/disease_detection/manage.py', 'collectstatic', '--noinput']
     env:

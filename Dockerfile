@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install -y software-properties-common && \
 RUN ln -s /usr/bin/python3.7 /usr/bin/python
 
 # Install/upgrade pip for python3.7
-RUN python3.7 -m pip install --upgrade pip setuptools wheel
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3.7 && \
+    python3.7 -m pip install --upgrade pip setuptools wheel
+
 
 
 # Set environment variables
