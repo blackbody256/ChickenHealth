@@ -1,30 +1,26 @@
 FROM nvidia/cuda:11.4.3-base-ubuntu20.04
 
-# Install Python and other dependencies
+# Install system dependencies and Python
 RUN apt-get update && apt-get install -y \
     python3.7 \
+    python3.7-dev \
+    gcc \
+    g++ \
+    libpq-dev \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pip for python3.7
-RUN curl https://bootstrap.pypa.io/get-pip.py | /usr/bin/python3.7
-
 # Set Python 3.7 as the default
 RUN ln -s /usr/bin/python3.7 /usr/bin/python
+
+# Install/upgrade pip for python3.7
+RUN python3.7 -m pip install --upgrade pip setuptools wheel
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    libpq-dev \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app
