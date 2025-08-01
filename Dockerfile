@@ -3,7 +3,6 @@ FROM nvidia/cuda:11.4.3-base-ubuntu20.04
 # Install Python and other dependencies
 RUN apt-get update && apt-get install -y \
     python3.7 \
-    python3.7-distutils \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/*
