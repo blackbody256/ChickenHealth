@@ -33,6 +33,8 @@ steps:
       - 'disease-detection'
       - '--image'
       - 'us-east4-docker.pkg.dev/$PROJECT_ID/disease-detection-repo/disease-detection:latest'
+      - '--accelerator'
+      - 'type=nvidia-tesla-t4,count=1'
       - '--region'
       - 'us-east4'
       - '--platform'

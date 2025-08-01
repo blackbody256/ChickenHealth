@@ -134,20 +134,13 @@ if DEBUG:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Google Cloud Storage settings for production
-if not DEBUG:
-    # Google Cloud Storage configuration
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    GS_BUCKET_NAME = config('GS_BUCKET_NAME', default='chicken-health-app-storage')
-    GS_PROJECT_ID = config('GS_PROJECT_ID', default='')
-    GS_DEFAULT_ACL = 'publicRead'
-    GS_FILE_OVERWRITE = False
-    GS_MAX_MEMORY_SIZE = 134217728  # 128 MB
-    
-    # Use the bucket for both static and media files
-    STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/static/'
-    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/media/'
+# Google Cloud Storage settings
+GS_BUCKET_NAME = os.environ.get('GS_BUCKET_NAME')
+GS_PROJECT_ID = os.environ.get('GS_PROJECT_ID')
+GS_CREDENTIALS = None  # Use service account credentials
+GS_DEFAULT_ACL = 'publicRead'  # Make uploaded files public
+GS_STATIC_LOCATION = 'static'
+GS_MEDIA_LOCATION = 'media'
 else:
     # WhiteNoise configuration for static files in development/staging
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

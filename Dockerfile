@@ -1,4 +1,10 @@
-FROM python:3.7.12-slim
+FROM nvidia/cuda:11.4.0-base-ubuntu20.04
+
+# Install Python and other dependencies
+RUN apt-get update && apt-get install -y     python3.7     python3-pip     git     && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3.7 as the default
+RUN ln -s /usr/bin/python3.7 /usr/bin/python &&     ln -s /usr/bin/pip3 /usr/bin/pip
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
