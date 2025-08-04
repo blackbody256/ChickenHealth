@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block content %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 <style>
     .dashboard-container {
         max-width: 1400px;
@@ -453,57 +458,6 @@
     .empty-state p {
         font-size: 1rem;
         line-height: 1.6;
-    }
-
-    @media (max-width: 768px) {
-        .dashboard-container {
-            padding: 1rem;
-        }
-
-        .dashboard-title {
-            font-size: 1.75rem;
-            flex-direction: column;
-            gap: 0.5rem;
-            text-align: center;
-        }
-
-        .main-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-        
-        .stats-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        .stat-card {
-            padding: 1.25rem;
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-        }
-        
-        .quick-actions {
-            grid-template-columns: 1fr;
-        }
-
-        .recent-activities {
-            padding: 1.5rem;
-        }
-
-        .sidebar-cards .card {
-            padding: 1.5rem;
-        }
-
-        .weather-card {
-            padding: 1.5rem;
-        }
-
-        .weather-temp {
-            font-size: 2rem;
-        }
     }
 
     .activity-list {

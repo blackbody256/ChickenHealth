@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block content %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 <style>
     .dashboard-container {
   padding: 2rem;
@@ -142,7 +147,6 @@
   background: #4caf50;
   height: 100%;
 }
-
 </style>
 <div class="dashboard-container">
     <h2 class="dashboard-title">Vet Dashboard</h2>

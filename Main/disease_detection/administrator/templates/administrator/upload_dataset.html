@@ -3,121 +3,13 @@
 {% block title %}Upload Training Dataset - KukuIntel{% endblock %}
 
 {% block content %}
-<style>
-    .upload-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 4rem 1rem;
-        background: #f4f6f5;
-        min-height: calc(100vh - 200px);
-    }
+{% extends "layouts/base.html" %}
 
-    .upload-card {
-        background: white;
-        padding: 2rem 2.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        width: 100%;
-    }
+{% block title %}Upload Training Dataset - KukuIntel{% endblock %}
 
-    .upload-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 
-    .upload-icon {
-        font-size: 2rem;
-        background-color: #2e7d32;
-        color: white;
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        margin: 0 auto 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .upload-header h2 {
-        margin-bottom: 0.5rem;
-        color: #2d3748;
-    }
-
-    .upload-header p {
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .upload-form label {
-        display: block;
-        margin-top: 1rem;
-        font-weight: 500;
-        color: #2d3748;
-    }
-
-    .upload-form input {
-        width: 100%;
-        padding: 0.6rem;
-        margin-top: 0.3rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 0.9rem;
-    }
-
-    .upload-form input:focus {
-        outline: none;
-        border-color: #2e7d32;
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 0.7rem;
-        background-color: #2e7d32;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 1.5rem;
-        font-size: 1rem;
-        transition: background-color 0.2s;
-    }
-
-    .submit-btn:hover {
-        background-color: #1b5e20;
-    }
-
-    .form-errors {
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 0.75rem;
-        border-radius: 5px;
-        margin-bottom: 1rem;
-        border: 1px solid #f5c6cb;
-    }
-
-    .form-errors ul {
-        margin: 0;
-        padding-left: 1.5rem;
-    }
-
-    .form-success {
-        background-color: #d4edda;
-        color: #155724;
-        padding: 0.75rem;
-        border: 1px solid #c3e6cb;
-        border-radius: 5px;
-        margin-bottom: 1rem;
-    }
-
-    .helptext {
-        font-size: 0.8rem;
-        color: #666;
-        margin-top: 0.25rem;
-    }
-</style>
 
 <div class="upload-section">
     <div class="upload-card">

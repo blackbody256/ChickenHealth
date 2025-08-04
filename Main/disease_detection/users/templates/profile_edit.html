@@ -4,6 +4,13 @@
 {% block title %}My Profile - Chicken Health{% endblock %}
 
 {% block content %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Chicken Health{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 <style>
     .profile-section {
         max-width: 1200px;
@@ -204,34 +211,6 @@
 
     .activity-link:hover {
         color: #20c997;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .profile-container {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .profile-section {
-            padding: 1rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .profile-card {
-            padding: 1.5rem;
-        }
-
-        .btn {
-            width: 100%;
-            justify-content: center;
-            margin: 0.25rem 0;
-        }
     }
 </style>
 

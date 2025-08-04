@@ -3,6 +3,12 @@
 {% block title %}About KukuIntel{% endblock %}
 
 {% block content %}
+{% extends "layouts/base.html" %}
+
+{% block title %}About KukuIntel{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 <style>
     /* Reset & Base Styles */
     * {
@@ -191,26 +197,6 @@
         background-color: #2e7d32;
         color: white;
         font-weight: bold;
-    }
-    
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .hero h1 {
-            font-size: 2rem;
-        }
-        
-        .hero p {
-            font-size: 1rem;
-        }
-        
-        .mission {
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .mission h2 {
-            font-size: 2rem;
-        }
     }
 </style>
 

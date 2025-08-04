@@ -1,0 +1,303 @@
+
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .hamburger-menu {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #2e7d32;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        padding: 0 1rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .content-wrapper {
+        padding: 1rem;
+    }
+
+    .dataset-container {
+        padding: 1rem;
+    }
+
+    .dataset-card {
+        padding: 1rem;
+    }
+
+    .dataset-name {
+        font-size: 0.9rem;
+    }
+
+    .upload-section {
+        padding: 2rem 1rem;
+    }
+
+    .upload-card {
+        padding: 1.5rem;
+    }
+
+    .upload-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .chat-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .chat-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .chat-main {
+        width: 100%;
+    }
+
+    .message.me, .message.them {
+        max-width: 80%;
+    }
+
+    .detail-section {
+        padding: 1rem;
+    }
+
+    .detail-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .detail-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .detail-card {
+        padding: 1.5rem;
+    }
+
+    .recommendations-section {
+        padding: 1.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-section {
+        padding: 1rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .results-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .results-section {
+        padding: 1rem;
+    }
+
+    .result-card {
+        padding: 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .upload-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .camera-controls {
+        flex-direction: column;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+    
+    .how-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .name-grid {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .stat-card {
+        padding: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-activities {
+        padding: 1.5rem;
+    }
+
+    .sidebar-cards .card {
+        padding: 1.5rem;
+    }
+
+    .weather-card {
+        padding: 1.5rem;
+    }
+
+    .weather-temp {
+        font-size: 2rem;
+    }
+
+    .edit-card {
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-save,
+    .btn-cancel {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .login-card {
+        padding: 1.5rem;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-button {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .profile-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .profile-section {
+        padding: 1rem;
+    }
+
+    .profile-card {
+        padding: 1.5rem;
+    }
+
+    .reset-card {
+        padding: 1.5rem;
+    }
+
+    .dataset-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-container {
+        padding: 1rem;
+    }
+}

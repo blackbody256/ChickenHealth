@@ -4,6 +4,13 @@
 {% block title %}Analysis Results - Chicken Health Detection{% endblock %}
 
 {% block content %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Analysis Results - Chicken Health Detection{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 <style>
     .results-section {
         max-width: 1200px;
@@ -315,45 +322,6 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         text-decoration: none;
         color: white;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .results-container {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .results-section {
-            padding: 1rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .result-card {
-            padding: 1.5rem;
-        }
-
-        .recommendations-section {
-            padding: 1.5rem;
-        }
-
-        .action-buttons {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr 1fr;
-        }
     }
 </style>
 

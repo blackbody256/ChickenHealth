@@ -4,6 +4,13 @@
 {% block title %}Disease Detection - Chicken Health Analysis{% endblock %}
 
 {% block content %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Disease Detection - Chicken Health Analysis{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 <style>
     .upload-section {
         max-width: 1200px;
@@ -327,42 +334,6 @@
         margin-bottom: 2rem;
         border: 1px solid #f5c6cb;
         display: none;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .upload-container {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .upload-section {
-            padding: 1rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .upload-card {
-            padding: 1.5rem;
-        }
-
-        .camera-controls {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 1rem 2rem;
-        }
     }
 
     /* Animation for cards */
