@@ -6,6 +6,7 @@
     <title>{% block title %}Chicken Disease Detection{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
     <style>
         /* Reset & Base Styles */
         * {
@@ -25,69 +26,117 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            position: relative;
         }
 
-        .content-body {
+        /* Fix the layout wrapper class name */
+        .dashboard-layout {
             display: flex;
             flex: 1;
-            min-height: 0; /* Allow flex items to shrink */
-        }
-        
-        main {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto; /* Allow scrolling if content exceeds height */
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Navbar Styles - Only for unauthenticated users */
-        .navbar {
+        .dashboard-layout .sidebar {
+            width: 240px;
+            min-width: 240px;
+            background: linear-gradient(180deg, #2e7d32 0%, #206922 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+            position: fixed; /* Make it sticky */
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            border-right: none;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dashboard-layout main {
+            flex: 1;
+            padding: 1.5rem;
+            height: 100vh;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border: none;
+            margin-left: 240px; /* Account for fixed sidebar */
+            box-sizing: border-box;
+        }
+
+        /* Header Styles - For home and about pages */
+        .header {
             background-color: #ffffff;
             padding: 0;
             width: 100%;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             border: none;
             z-index: 1000;
+            position: sticky;
+            top: 0;
         }
-        
-        .nav-container {
+
+        .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 2rem;
             height: 64px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        
-        .logo {
+
+        .header .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #2e7d32;
         }
-        
-        .logo img {
-            height: 36px;
+
+        .header .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: #2e7d32;
         }
-        
-        .nav-links {
+
+        .logo-img {
+            height: 40px;
+            width: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .header .nav-links {
             display: flex;
             align-items: center;
             list-style: none;
             gap: 1rem;
+            margin: 0;
+            padding: 0;
         }
-        
-        .nav-links a {
+
+        .header .nav-links a {
             color: #2e7d32;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
             padding: 0.5rem 1rem;
-            transition: color 0.2s ease;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
-        
-        .nav-links a:hover, .nav-links a:focus {
-            color: #4caf50;
+
+        .header .nav-links a:hover, 
+        .header .nav-links a:focus {
+            color: #ffffff;
+            background-color: #2e7d32;
         }
-        
-        .logout-btn {
+
+        .header .logout-btn {
             background: none !important;
             border: none;
             color: #2e7d32 !important;
@@ -95,36 +144,165 @@
             cursor: pointer;
             padding: 0.5rem 1rem;
             font-size: 0.95rem;
-        }
-        
-        .logout-btn:hover {
-            color: #4caf50 !important;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        /* Sidebar Styles - Full Height */
+        .header .logout-btn:hover {
+            color: #ffffff !important;
+            background-color: #2e7d32 !important;
+        }
+
+        /* Hamburger menu styles */
+        .hamburger-menu, .mobile-sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #2e7d32;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            min-width: 44px;
+            min-height: 44px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .mobile-sidebar-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        .hamburger-line {
+            width: 20px;
+            height: 2px;
+            background-color: currentColor;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        /* Hamburger animation states */
+        .hamburger-menu.active .hamburger-line:nth-child(1),
+        .mobile-sidebar-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(2),
+        .mobile-sidebar-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(3),
+        .mobile-sidebar-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .hamburger-menu:hover, .mobile-sidebar-toggle:hover {
+            background-color: rgba(46, 125, 50, 0.1);
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Sidebar Styles - Full Height and Fixed */
         .sidebar {
             width: 240px;
-            min-width: 240px; /* Prevent shrinking */
+            min-width: 240px;
             background: linear-gradient(180deg, #2e7d32 0%, #206922 100%);
             color: #ffffff;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-            height: 100%; /* Full height of content area */
-            min-height: 100vh; /* Minimum full viewport height */
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            border-right: none;
+            z-index: 1000;
         }
 
         .sidebar .logo {
             padding: 1.5rem;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            flex-shrink: 0; /* Don't shrink logo area */
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.1);
+            display: flex; /* Add this */
+            align-items: center; /* Add this */
+            gap: 0.75rem; /* Add this */
+        }
+
+        .sidebar .logo img {
+            height: 32px; /* Add specific size for sidebar logo */
+            width: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+            flex-shrink: 0; /* Prevent image from shrinking */
+        }
+
+        .sidebar .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: #ffffff;
+            white-space: nowrap; /* Prevent text wrapping */
         }
 
         .sidebar-nav {
             list-style: none;
-            flex: 1; /* Take remaining space */
+            flex: 1;
             padding: 1rem 0;
-            overflow-y: auto; /* Allow scrolling if many items */
+            overflow-y: auto; /* Allow scrolling only for nav items if needed */
+            overflow-x: hidden;
+            margin: 0;
+            /* Custom scrollbar for better look */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+
+        /* Custom scrollbar for webkit browsers */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255,255,255,0.5);
         }
 
         .sidebar-nav a {
@@ -133,15 +311,19 @@
             gap: 0.75rem;
             color: #e8f5e9;
             text-decoration: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.5rem;
             font-size: 0.95rem;
             font-weight: 400;
             transition: all 0.2s ease;
+            min-height: 48px;
+            border: none;
+            background: none;
         }
 
         .sidebar-nav a:hover {
             background: rgba(255,255,255,0.1);
             color: #ffffff;
+            transform: translateX(2px);
         }
 
         .sidebar-nav a.active {
@@ -165,6 +347,8 @@
             width: 20px;
             text-align: center;
             color: #e8f5e9;
+            font-size: 1rem;
+            flex-shrink: 0;
         }
 
         .sidebar-nav a.active i {
@@ -184,288 +368,334 @@
             color: #e8f5e9;
             font-size: 0.95rem;
             font-weight: 400;
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.5rem;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            min-height: 48px;
         }
 
         .sidebar-nav form button:hover {
             background: rgba(255,255,255,0.1);
             color: #ffffff;
+            transform: translateX(2px);
         }
 
-        /* Authenticated layout - Full height setup */
-        .authenticated-layout {
-            height: 100vh;
-            overflow: hidden; /* Prevent page scrolling */
-        }
-
-        .authenticated-layout .content-body {
-            height: 100vh;
-            overflow: hidden; /* Content manages its own overflow */
-        }
-
-        .authenticated-layout main {
-            padding: 1.5rem;
-            height: 100%;
-            overflow-y: auto; /* Allow main content to scroll */
-        }
-        
-        /* Footer */
-        .footer {
-            background: linear-gradient(180deg, #2e7d32 0%, #206922 100%);
-            color: #e8f5e9;
+        .sidebar-nav form button i {
+            width: 20px;
             text-align: center;
-            padding: 1rem;
-            font-size: 0.85rem;
-            flex-shrink: 0; /* Don't shrink footer */
+            color: #e8f5e9;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav form button:hover i {
+            color: #ffffff;
+        }
+
+        /* Main Content Responsive */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .content-wrapper {
+            padding: 1.5rem;
         }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .content-body {
-                flex-direction: column;
-                height: auto;
+            /* Dashboard layout for mobile */
+            .dashboard-layout {
+                flex-direction: row;
+                height: 100vh;
+                min-height: 100vh;
+                overflow: hidden;
             }
             
+            /* Mobile sidebar - initially hidden but still fixed */
+            .dashboard-layout .sidebar,
             .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1999;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+                overflow-y: auto;
+            }
+            
+            .dashboard-layout .sidebar.active,
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            /* Mobile main content */
+            .dashboard-layout main {
                 width: 100%;
-                min-width: 100%;
-                order: 2;
-                height: auto;
-                min-height: auto;
+                margin-left: 0; /* Remove margin on mobile */
+                padding: 4rem 1rem 1rem 1rem; /* Add top padding for burger menu */
+                height: 100vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Show hamburger menus on mobile */
+            .hamburger-menu,
+            .mobile-sidebar-toggle {
+                display: flex;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .dashboard-layout .sidebar,
+            .sidebar {
+                width: 100vw;
             }
             
-            .sidebar .logo {
-                padding: 1rem;
+            .mobile-sidebar-toggle {
+                top: 0.75rem;
+                left: 0.75rem;
             }
             
-            .sidebar-nav {
-                padding: 0.5rem 0;
+            .dashboard-layout main {
+                padding: 3.5rem 0.75rem 0.75rem 0.75rem;
             }
-            
-            main {
-                order: 1;
-                padding: 1rem;
-                height: auto;
-                overflow-y: visible;
-            }
-            
-            .nav-container {
-                padding: 0 1rem;
-            }
-            
-            .authenticated-layout {
-                height: auto;
-                overflow: visible;
-            }
-            
-            .authenticated-layout .content-body {
-                height: auto;
-                overflow: visible;
-            }
-            
-            .authenticated-layout main {
-                height: auto;
-                overflow-y: visible;
-            }
+        }
+
+        /* Ensure body doesn't have scroll when sidebar is fixed */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Page container adjustments */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
         }
     </style>
 </head>
 <body>
-    <div class="page-container {% if user.is_authenticated %}authenticated-layout{% endif %}">
-        <!-- Header - Only show for unauthenticated users -->
-        {% if not user.is_authenticated %}
-        <header>
-            <nav class="navbar">
-                <div class="nav-container">
-                    <div class="logo">
-                        <a href="{% url 'users:home' %}">
-                            <img src="{% static 'images/agricure.png' %}" alt="KukuIntel Logo" />
-                        </a>
-                    </div>
-                    <ul class="nav-links">
-                        <li><a href="{% url 'users:home' %}">Home</a></li>
-                        <li><a href="{% url 'users:about' %}">About</a></li>
-                        <li><a href="{% url 'users:login' %}">Login</a></li>
-                        <li><a href="{% url 'users:signup' %}">Register</a></li>
-                    </ul>
-                </div>
+    <!-- Header for non-dashboard pages -->
+    {% if not request.user.is_authenticated or request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'about' %}
+    <header class="header">
+        <div class="header-container">
+            <a href="{% url 'users:home' %}" class="logo">
+                {% load static %}
+                <img src="{% static 'media/betterkukulogo.jpg' %}" alt="Logo" class="logo-img">
+                <h1>KukuIntel</h1>
+            </a>
+            
+            <!-- Burger menu for mobile -->
+            <button class="hamburger-menu" aria-label="Toggle navigation menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            
+            <nav class="nav-links">
+                <a href="{% url 'users:home' %}">Home</a>
+                <a href="{% url 'users:about' %}">About</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'users:dashboard' %}">Dashboard</a>
+                    <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'users:login' %}">Login</a>
+                    <a href="{% url 'users:signup' %}">Register</a>
+                {% endif %}
             </nav>
-        </header>
-        {% endif %}
-
-        <div class="content-body">
-            {% if user.is_authenticated %}
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="logo">
-                    <a href="{% url 'users:home' %}">
-                        <img src="{% static 'images/agricure.png' %}" alt="KukuIntel Logo" />
-                    </a>
-                </div>
-                <ul class="sidebar-nav">
-                    {% if user.role == 'ADMIN' %}
-                        <li><a href="{% url 'users:admin_dashboard' %}" data-page="admin_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                        <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
-                        <li><a href="{% url 'users:manage_farmers' %}" data-page="manage_farmers"><i class="fas fa-users"></i> Manage Farmers</a></li>
-                        <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
-                        <li><a href="{% url 'diagnosis:history' %}" data-page="history"><i class="fas fa-history"></i> Diagnosis History</a></li>
-                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat"><i class="fas fa-comments"></i> Expert Chat</a></li>
-                    {% elif user.role == 'VET' %}
-                        <li><a href="{% url 'users:vet_dashboard' %}" data-page="vet_dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                        <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
-                        <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
-                        <li><a href="{% url 'diagnosis:history' %}" data-page="history"><i class="fas fa-history"></i> Diagnosis History</a></li>
-                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat"><i class="fas fa-comments"></i> Expert Chat</a></li>
-                        <li><a href="{% url 'vet:dataset_list' %}" data-page="vet_dataset_list"><i class="fas fa-database"></i> Datasets</a></li>
-                        <li><a href="{% url 'vet:report' %}" data-page="vet_report"><i class="fas fa-chart-line"></i> Reports</a></li>
-                    {% else %}
-                        <li><a href="{% url 'users:dashboard' %}" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                        <li><a href="{% url 'users:profile_edit' %}" data-page="profile_edit"><i class="fas fa-user-edit"></i> Profile</a></li>
-                        <li><a href="{% url 'diagnosis:upload_predict' %}" data-page="diagnose"><i class="fas fa-bug"></i> Disease Detection</a></li>
-                        <li><a href="{% url 'diagnosis:history' %}" data-page="history"><i class="fas fa-history"></i> Diagnosis History</a></li>
-                        <li><a href="{% url 'chat:dashboard' %}" data-page="chat"><i class="fas fa-comments"></i> Expert Chat</a></li>
-                    {% endif %}
-                    <li>
-                        <form action="{% url 'users:logout' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </aside>
-            {% endif %}
-
-            <!-- Main Content -->
-            <main>
-                {% block content %}{% endblock %}
-            </main>
         </div>
+    </header>
+    {% endif %}
 
-        <!-- Footer - Only show for unauthenticated users -->
-        {% if not user.is_authenticated %}
-        <footer class="footer">
-            <p>© 2025 Chicken Disease Detection. All rights reserved.</p>
-            <p>Contact: info@chickendisease.com</p>
-        </footer>
+    <!-- Main Layout -->
+    <div class="{% if request.user.is_authenticated and request.resolver_match.url_name != 'home' and request.resolver_match.url_name != 'about' %}dashboard-layout{% endif %}">
+        {% if request.user.is_authenticated and request.resolver_match.url_name != 'home' and request.resolver_match.url_name != 'about' %}
+        
+        <!-- Mobile burger menu for dashboard -->
+        <button class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        
+        <!-- Sidebar for dashboard -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <img src="{% static 'media/betterkukulogo.jpg' %}" alt="Logo" class="logo-img">
+                <h1>KukuIntel</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{% url 'users:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'diagnosis:upload_predict' %}" class="{% if request.resolver_match.url_name == 'upload_predict' %}active{% endif %}">
+                    <i class="fas fa-upload"></i>
+                    <span>Upload Image</span>
+                </a>
+                <a href="{% url 'diagnosis:history' %}" class="{% if request.resolver_match.url_name == 'history' %}active{% endif %}">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="{% url 'chat:dashboard' %}" class="{% if request.resolver_match.app_name == 'chat' %}active{% endif %}">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat with Vet</span>
+                </a>
+                <a href="{% url 'users:profile_edit' %}" class="{% if request.resolver_match.url_name == 'profile_edit' %}active{% endif %}">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </nav>
+        </aside>
         {% endif %}
+        
+        <main class="{% if request.user.is_authenticated and request.resolver_match.url_name != 'home' and request.resolver_match.url_name != 'about' %}content-wrapper{% else %}main-content{% endif %}" 
+              {% if request.resolver_match.url_name == 'home' %}style="padding: 0; margin: 0;"{% endif %}>
+            {% block content %}{% endblock %}
+        </main>
     </div>
+
+    <!-- Mobile overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔧 Initializing sidebar navigation...');
-            
-            // Get current URL path
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const mobileToggle = document.querySelector('.mobile-sidebar-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.mobile-overlay');
+
+            // Handle header hamburger menu (for home/about pages)
+            if (hamburgerMenu && navLinks) {
+                hamburgerMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    hamburgerMenu.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                    
+                    // Prevent body scroll when menu is open
+                    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+                });
+            }
+
+            // Handle dashboard sidebar toggle (for dashboard pages)
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileToggle.classList.toggle('active');
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                    
+                    // Prevent body scroll when sidebar is open
+                    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+                });
+            }
+
+            // Close menus when clicking overlay
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    // Close header nav
+                    if (hamburgerMenu && navLinks) {
+                        hamburgerMenu.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    }
+                    
+                    // Close sidebar
+                    if (mobileToggle && sidebar) {
+                        mobileToggle.classList.remove('active');
+                        sidebar.classList.remove('active');
+                    }
+                    
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            // Close menus when clicking nav/sidebar links
+            if (navLinks) {
+                navLinks.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                        if (hamburgerMenu) hamburgerMenu.classList.remove('active');
+                        navLinks.classList.remove('active');
+                        overlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            if (sidebar) {
+                sidebar.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768 && (e.target.tagName === 'A' || e.target.tagName === 'BUTTON')) {
+                        if (mobileToggle) mobileToggle.classList.remove('active');
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    // Reset all mobile menu states
+                    if (hamburgerMenu) hamburgerMenu.classList.remove('active');
+                    if (mobileToggle) mobileToggle.classList.remove('active');
+                    if (navLinks) navLinks.classList.remove('active');
+                    if (sidebar) sidebar.classList.remove('active');
+                    if (overlay) overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Add active class to current page in sidebar
             const currentPath = window.location.pathname;
-            const sidebarLinks = document.querySelectorAll('.sidebar-nav a[data-page]');
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
             
-            console.log('📍 Current path:', currentPath);
-            console.log('🔗 Found sidebar links:', sidebarLinks.length);
-            
-            // Enhanced URL to data-page mapping
-            const urlMapping = {
-                // Admin URLs
-                '/users/admin-dashboard/': 'admin_dashboard',
-                '/users/profile/': 'profile_edit',
-                '/users/manage-farmers/': 'manage_farmers',
-                '/diagnosis/diagnose/': 'diagnose',
-                '/diagnosis/history/': 'history',
-                '/chat/': 'chat',
-                '/administrator/upload/': 'upload_dataset',
-                '/administrator/datasets/': 'dataset_list',
-                
-                // Vet URLs
-                '/users/vet-dashboard/': 'vet_dashboard',
-                '/vet/list/': 'vet_dataset_list',
-                '/vet/report/': 'vet_report',
-                '/chat/dashboard/': 'chat',
-                
-                // Farmer URLs
-                '/users/dashboard/': 'dashboard',
-            };
-            
-            // Function to check if current path matches link
-            function isActiveLink(link) {
-                const href = link.getAttribute('href');
-                const dataPage = link.getAttribute('data-page');
-                
-                console.log(`🔍 Checking link: ${dataPage} (${href})`);
-                
-                // Direct URL match (exact)
-                if (currentPath === href) {
-                    console.log(`✅ Exact match found: ${dataPage}`);
-                    return true;
-                }
-                
-                // Check URL mapping
-                if (urlMapping[currentPath] === dataPage) {
-                    console.log(`✅ Mapping match found: ${dataPage}`);
-                    return true;
-                }
-                
-                // Special handling for diagnosis pages
-                if (dataPage === 'diagnose' && (
-                    currentPath.includes('/diagnosis/') && 
-                    !currentPath.includes('/diagnosis/history') &&
-                    !currentPath.includes('/diagnosis/detail')
-                )) {
-                    console.log(`✅ Diagnosis match found: ${dataPage}`);
-                    return true;
-                }
-                
-                // Special handling for history pages
-                if (dataPage === 'history' && (
-                    currentPath.includes('/diagnosis/history') || 
-                    currentPath.includes('/diagnosis/detail')
-                )) {
-                    console.log(`✅ History match found: ${dataPage}`);
-                    return true;
-                }
-                
-                // Special handling for chat pages
-                if (dataPage === 'chat' && (
-                    currentPath.includes('/chat/')
-                )) {
-                    console.log(`✅ Chat match found: ${dataPage}`);
-                    return true;
-                }
-                
-                // Partial match for nested pages (but not root)
-                if (href !== '/' && currentPath.startsWith(href)) {
-                    console.log(`✅ Partial match found: ${dataPage}`);
-                    return true;
-                }
-                
-                return false;
-            }
-            
-            // Clear all active states first
             sidebarLinks.forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Set active state based on current page
-            let activeFound = false;
-            sidebarLinks.forEach(link => {
-                if (isActiveLink(link) && !activeFound) {
+                if (link.getAttribute('href') === currentPath) {
                     link.classList.add('active');
-                    activeFound = true;
-                    console.log(`🎯 Set active: ${link.getAttribute('data-page')}`);
                 }
             });
-            
-            if (!activeFound) {
-                console.log('⚠️ No active link found for current path');
-            }
-            
-            // Handle click events (removed to prevent conflicts)
-            // The active state will only be set based on the actual current page
-            
-            console.log('✅ Sidebar navigation initialized');
+
+            // Handle escape key to close menus
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (hamburgerMenu) hamburgerMenu.classList.remove('active');
+                    if (mobileToggle) mobileToggle.classList.remove('active');
+                    if (navLinks) navLinks.classList.remove('active');
+                    if (sidebar) sidebar.classList.remove('active');
+                    if (overlay) overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
         });
     </script>
 </body>

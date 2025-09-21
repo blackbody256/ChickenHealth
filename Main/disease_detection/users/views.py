@@ -132,6 +132,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 def home(request):
+    """Home page view"""
     return render(request, 'home.html')
 
 @login_required
@@ -264,9 +265,6 @@ def vet_dashboard(request):
     }
     return render(request, 'vet_dashboard.html', context)
 
-def about(request):
-    return render(request, 'about.html')
-
 # Password reset views
 from django.contrib.auth.views import (
     PasswordResetView, 
@@ -381,3 +379,7 @@ def profile(request):
     }
     
     return render(request, 'profile_edit.html', context)  # Changed to use the same template
+
+def about(request):
+    """About page view"""
+    return render(request, 'about.html')

@@ -358,7 +358,7 @@
                                 <a href="{{ dataset.file.url }}" class="btn btn-download" download>
                                     <i class="fas fa-download"></i> Download
                                 </a>
-                                <form method="post" action="{% url 'vet:dataset_delete' dataset.id %}" style="display: inline;">
+                                <form method="post" action="{% url 'vet:delete_upload' dataset.id %}" style="display: inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this dataset?')">
                                         <i class="fas fa-trash"></i> Delete
