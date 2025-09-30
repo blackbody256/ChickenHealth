@@ -407,9 +407,110 @@
             padding: 1.5rem;
         }
 
+        /* Home page header adjustments */
+        .home-header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Mobile specific home header */
+        @media (max-width: 768px) {
+            .home-header {
+                background-color: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            
+            .home-header .header-container {
+                height: 52px;
+                padding: 0 1rem;
+            }
+            
+            .home-header .logo h1 {
+                font-size: 1.125rem;
+            }
+            
+            .home-header .logo-img {
+                height: 28px;
+                width: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .home-header .header-container {
+                height: 48px;
+                padding: 0 0.75rem;
+            }
+            
+            .home-header .logo h1 {
+                font-size: 1rem;
+            }
+            
+            .home-header .logo-img {
+                height: 24px;
+                width: 24px;
+            }
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            /* Dashboard layout for mobile */
+            /* Header mobile styles */
+            .header-container {
+                padding: 0 1rem;
+                height: 56px;
+            }
+            
+            .header .logo h1 {
+                font-size: 1.25rem;
+            }
+            
+            .logo-img {
+                height: 32px;
+                width: 32px;
+            }
+            
+            /* Hide desktop nav links by default on mobile */
+            .header .nav-links {
+                display: none;
+                position: fixed;
+                top: 56px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ffffff;
+                flex-direction: column;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                padding: 2rem 1rem;
+                gap: 1rem;
+                z-index: 1000;
+                overflow-y: auto;
+            }
+            
+            .header .nav-links.active {
+                display: flex;
+            }
+            
+            .header .nav-links a,
+            .header .logout-btn {
+                padding: 1rem 1.5rem;
+                width: 100%;
+                text-align: center;
+                border-radius: 8px;
+                font-size: 1rem;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #e0e0e0;
+                margin: 0;
+            }
+
+            /* Show hamburger menu on mobile */
+            .hamburger-menu {
+                display: flex;
+            }
+
+            /* Dashboard mobile styles */
             .dashboard-layout {
                 flex-direction: row;
                 height: 100vh;
@@ -447,15 +548,39 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* Show hamburger menus on mobile */
-            .hamburger-menu,
+            /* Show mobile sidebar toggle */
             .mobile-sidebar-toggle {
                 display: flex;
+            }
+
+            /* Fix main content for home page on mobile */
+            .main-content {
+                padding: 0; /* Remove padding on mobile for home page */
+            }
+
+            /* Ensure home page has no extra spacing */
+            .main-content[style*="padding: 0"] {
+                padding: 0 !important;
+                margin: 0 !important;
             }
         }
 
         /* Extra small devices */
         @media (max-width: 480px) {
+            .header-container {
+                padding: 0 0.75rem;
+                height: 52px;
+            }
+            
+            .header .logo h1 {
+                font-size: 1.125rem;
+            }
+            
+            .logo-img {
+                height: 28px;
+                width: 28px;
+            }
+
             .dashboard-layout .sidebar,
             .sidebar {
                 width: 100vw;
@@ -468,6 +593,15 @@
             
             .dashboard-layout main {
                 padding: 3.5rem 0.75rem 0.75rem 0.75rem;
+            }
+
+            /* Even smaller header on very small screens */
+            .header-container {
+                height: 48px;
+            }
+
+            .header .nav-links {
+                top: 48px;
             }
         }
 
@@ -494,7 +628,7 @@
 <body>
     <!-- Header for non-dashboard pages -->
     {% if not request.user.is_authenticated or request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'about' %}
-    <header class="header">
+    <header class="header {% if request.resolver_match.url_name == 'home' %}home-header{% endif %}">
         <div class="header-container">
             <a href="{% url 'users:home' %}" class="logo">
                 {% load static %}
