@@ -1,311 +1,286 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chicken Health Detector - AI-Powered Poultry Health Analysis</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                🐔 Chicken Health Detector
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link active" href="index.html">
-                    <i class="fas fa-upload"></i> Upload
-                </a>
-                <a class="nav-link" href="history.html">
-                    <i class="fas fa-history"></i> History
-                </a>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>KukuIntel — Early Poultry Disease Detection</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            kukugreen: '#2e7d32',
+                            kukulight: '#e8f5e9',
+                            kukuyellow: '#ffb020',
+                            kukupoultry: '#fd7e14'
+                        }
+                    }
+                }
+            }
+        </script>
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body class="antialiased text-gray-800 bg-white leading-relaxed">
+        <nav class="fixed w-full z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <a href="#hero" class="flex items-center gap-3" aria-label="KukuIntel">
+                        <img src="images/logo-placeholder.png" alt="KukuIntel" class="h-10 w-10 rounded-md object-cover bg-kukulight" onerror="this.style.display='none'"/>
+                        <span class="font-semibold text-lg text-kukugreen">KukuIntel</span>
+                    </a>
+                    <div class="hidden md:flex items-center gap-4">
+                        <a href="#about" class="text-sm hover:text-kukugreen">About</a>
+                        <a href="#features" class="text-sm hover:text-kukugreen">Features</a>
+                        <a href="#how" class="text-sm hover:text-kukugreen">How it works</a>
+                        <a href="#pricing" class="text-sm hover:text-kukugreen">Pricing</a>
+                        <a href="#contact" class="text-sm text-white bg-kukugreen px-3 py-2 rounded-lg hover:opacity-95">Contact</a>
+                    </div>
+                    <div class="md:hidden">
+                        <button id="mobileBtn" class="p-2 rounded-md border border-gray-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-kukugreen" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>
-
-    <!-- Alert Container -->
-    <div class="container mt-3">
-        <div id="alertContainer"></div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <!-- System Status Card -->
-                <div class="alert alert-success mb-4 fade-in-up" role="alert">
-                    <h5 class="alert-heading">✅ System Ready - Model Loaded Successfully!</h5>
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <p class="mb-2">🧠 <strong>Modern Keras CNN Model v2.1</strong> - Trained on 10,000+ chicken dropping images</p>
-                            <p class="mb-0">🎯 <strong>Supported Diagnoses:</strong> 
-                                <span class="badge badge-healthy me-1">Healthy</span>
-                                <span class="badge badge-coccidiosis me-1">Coccidiosis</span>
-                                <span class="badge badge-newcastle me-1">Newcastle Disease</span>
-                                <span class="badge badge-salmonella">Salmonella</span>
-                            </p>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="stat-card">
-                                <span class="stat-number">94.2%</span>
-                                <span class="stat-label">Accuracy</span>
-                            </div>
-                        </div>
-                    </div>
-                    <small class="text-muted">📊 Processing time: ~2.5 seconds | Model version: v2.1 | Last updated: June 2025</small>
+            <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100">
+                <div class="px-4 py-4 flex flex-col gap-2">
+                    <a href="#about" class="py-2">About</a>
+                    <a href="#features" class="py-2">Features</a>
+                    <a href="#how" class="py-2">How it works</a>
+                    <a href="#pricing" class="py-2">Pricing</a>
+                    <a href="#contact" class="py-2">Contact</a>
                 </div>
+            </div>
+        </nav>
 
-                <!-- Upload Form Card -->
-                <div class="card shadow-lg mb-4">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="card-title mb-0">
-                            <i class="fas fa-camera"></i> Upload Chicken Dropping Image
-                        </h3>
+        <header id="hero" class="relative pt-24 pb-16">
+            <div class="absolute inset-0 bg-gradient-to-br from-kukugreen/40 via-transparent to-kukupoultry/10"></div>
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
+                    <div data-aos="fade-up">
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900">Early Poultry Disease Detection Powered by AI</h1>
+                        <p class="mt-4 text-gray-700 max-w-xl">KukuIntel helps small-scale poultry farmers detect gut-related diseases like Coccidiosis, Newcastle, and Salmonellosis early through image analysis of chicken droppings.</p>
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <a href="#demo" class="btn-primary inline-flex items-center gap-2 px-5 py-3 rounded-lg shadow">Try Demo</a>
+                            <a href="#contact" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-kukugreen text-kukugreen">Join Our Network</a>
+                        </div>
+                        <div class="mt-6 text-sm text-gray-600">Fast • Affordable • Accurate</div>
                     </div>
-                    <div class="card-body">
-                        <!-- Upload Area -->
-                        <div id="uploadArea" class="upload-area mb-3">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <h5>Drop your image here or click to browse</h5>
-                            <p class="text-muted">Supported formats: JPG, JPEG, PNG (Max: 5MB)</p>
-                            <input type="file" id="fileInput" class="file-input" accept="image/*">
-                        </div>
-
-                        <!-- Image Preview -->
-                        <div id="imagePreview" class="text-center mb-3" style="display: none;">
-                            <img id="previewImg" src="" alt="Preview" class="image-preview">
-                            <div class="mt-2">
-                                <small class="text-success">
-                                    <i class="fas fa-check-circle"></i> Image loaded successfully - Ready for analysis
-                                </small>
-                            </div>
-                        </div>
-
-                        <!-- Progress Bar -->
-                        <div id="progressContainer" class="mb-3" style="display: none;">
-                            <div class="progress">
-                                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
-                                     role="progressbar" style="width: 0%">
-                                </div>
-                            </div>
-                            <small class="text-muted mt-1" id="progressText">Preparing analysis...</small>
-                        </div>
-
-                        <!-- Analyze Button -->
-                        <div class="d-grid">
-                            <button id="analyzeBtn" class="btn btn-secondary btn-lg" disabled>
-                                <i class="fas fa-microscope"></i> Analyze Image with AI
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Results Preview -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-bar"></i> Recent Analysis Statistics
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-3">
-                                <div class="feature-icon mx-auto mb-2">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                                <div class="fw-bold text-success fs-4">67%</div>
-                                <small class="text-muted">Healthy</small>
-                            </div>
-                            <div class="col-3">
-                                <div class="feature-icon mx-auto mb-2" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </div>
-                                <div class="fw-bold text-warning fs-4">18%</div>
-                                <small class="text-muted">Coccidiosis</small>
-                            </div>
-                            <div class="col-3">
-                                <div class="feature-icon mx-auto mb-2" style="background: linear-gradient(135deg, #dc3545, #6f42c1);">
-                                    <i class="fas fa-virus"></i>
-                                </div>
-                                <div class="fw-bold text-danger fs-4">10%</div>
-                                <small class="text-muted">Newcastle</small>
-                            </div>
-                            <div class="col-3">
-                                <div class="feature-icon mx-auto mb-2" style="background: linear-gradient(135deg, #17a2b8, #007bff);">
-                                    <i class="fas fa-bacteria"></i>
-                                </div>
-                                <div class="fw-bold text-info fs-4">5%</div>
-                                <small class="text-muted">Salmonella</small>
-                            </div>
-                        </div>
-                        <small class="text-muted d-block text-center mt-3">
-                            <i class="fas fa-info-circle"></i> Distribution from last 100 analyses
-                        </small>
-                    </div>
-                </div>
-
-                <!-- Guidelines Card -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-list-check"></i> Guidelines for Best Results
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="text-success">
-                                    <i class="fas fa-thumbs-up"></i> Best Practices
-                                </h6>
-                                <ul class="recommendation-list">
-                                    <li>
-                                        <span class="recommendation-number">1</span>
-                                        <div>Use clear, well-lit images with natural lighting</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number">2</span>
-                                        <div>Ensure droppings are visible and in focus</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number">3</span>
-                                        <div>Include a reference object for scale</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number">4</span>
-                                        <div>Capture fresh samples (within 2 hours)</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number">5</span>
-                                        <div>Keep file size under 5MB for faster processing</div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="text-danger">
-                                    <i class="fas fa-thumbs-down"></i> Avoid These Issues
-                                </h6>
-                                <ul class="recommendation-list">
-                                    <li>
-                                        <span class="recommendation-number" style="background-color: #dc3545;">✗</span>
-                                        <div>Blurry or out-of-focus images</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number" style="background-color: #dc3545;">✗</span>
-                                        <div>Very dark or poorly lit photos</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number" style="background-color: #dc3545;">✗</span>
-                                        <div>Multiple subjects in one image</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number" style="background-color: #dc3545;">✗</span>
-                                        <div>Contaminated or mixed samples</div>
-                                    </li>
-                                    <li>
-                                        <span class="recommendation-number" style="background-color: #dc3545;">✗</span>
-                                        <div>Old or dried specimens</div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="alert alert-primary mt-4">
-                            <h6 class="alert-heading">
-                                <i class="fas fa-lightbulb"></i> Pro Tips for Maximum Accuracy
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <ul class="mb-0">
-                                        <li>📸 Take multiple angles of the same sample</li>
-                                        <li>🕐 Upload samples within 1-2 hours of collection</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="mb-0">
-                                        <li>🧼 Clean, neutral-colored surface beneath sample</li>
-                                        <li>📏 Include a coin or ruler for size reference</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="alert alert-info mb-0">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <small>
-                                        <strong>🔬 AI Model Information:</strong> Our system uses a state-of-the-art Convolutional Neural Network trained on thousands of annotated chicken dropping images, achieving 94.2% accuracy in clinical validation studies.
-                                    </small>
-                                </div>
-                                <div class="col-md-4 text-end">
-                                    <small>
-                                        <strong>⚕️ Medical Disclaimer:</strong> For informational purposes only. Always consult a qualified veterinarian.
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Feature Highlights -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-star"></i> New Features in v2.1
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-md-4 mb-3">
-                                <div class="feature-icon mx-auto">
-                                    <i class="fas fa-bolt"></i>
-                                </div>
-                                <h6>⚡ Faster Processing</h6>
-                                <small class="text-muted">50% faster analysis with optimized Keras models and GPU acceleration</small>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #28a745, #20c997);">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <h6>📊 Higher Accuracy</h6>
-                                <small class="text-muted">Improved to 94.2% accuracy with expanded training dataset and advanced data augmentation</small>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #17a2b8, #6610f2);">
-                                    <i class="fas fa-mobile-alt"></i>
-                                </div>
-                                <h6>📱 Mobile Optimized</h6>
-                                <small class="text-muted">Perfect for field use on smartphones and tablets with responsive design</small>
+                    <div data-aos="fade-left" class="bg-white/80 p-6 rounded-xl shadow-lg">
+                        <div class="text-sm font-medium text-kukulight uppercase">Live Demo</div>
+                        <div class="mt-4">
+                            <p class="text-gray-700">Upload a photo of droppings and get instant AI-powered diagnosis with treatment & vet connection.</p>
+                            <div class="mt-4">
+                                <a href="result.html" class="inline-block px-4 py-2 bg-kukuyellow text-white rounded-md">Try Demo Now</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </header>
 
-    <!-- Footer -->
-    <footer class="bg-light text-center py-4 mt-5">
-        <div class="container">
-            <p class="text-muted mb-0">
-                &copy; 2025 Chicken Health Detector | 
-                <a href="#" class="text-decoration-none">Privacy Policy</a> | 
-                <a href="#" class="text-decoration-none">Terms of Service</a>
-            </p>
-        </div>
-    </footer>
+        <main class="space-y-24">
+            <section id="about" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                    <div class="md:col-span-2">
+                        <h2 class="text-2xl font-bold text-kukugreen">About KukuIntel</h2>
+                        <p class="mt-4 text-gray-700">KukuIntel is a Ugandan AgriTech innovation founded by software engineering students from Makerere University. We combine AI and veterinary expertise to empower farmers with affordable and fast poultry disease diagnosis.</p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="p-4 bg-white rounded-lg shadow text-center">
+                            <div class="text-3xl text-kukugreen">💡</div>
+                            <div class="mt-2 text-sm">Innovation</div>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow text-center">
+                            <div class="text-3xl text-kukugreen">🤖</div>
+                            <div class="mt-2 text-sm">AI</div>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow text-center">
+                            <div class="text-3xl text-kukugreen">🌾</div>
+                            <div class="mt-2 text-sm">Agriculture</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="js/app.js"></script>
-</body>
+            <section id="features" class="bg-gray-50 py-12" data-aos="fade-up">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h3 class="text-xl font-bold text-kukugreen">Products & Features</h3>
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <div class="text-2xl">🧠</div>
+                            <h4 class="mt-3 font-semibold">AI Disease Detection</h4>
+                            <p class="mt-2 text-sm text-gray-600">Upload chicken droppings → instant diagnosis.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <div class="text-2xl">💊</div>
+                            <h4 class="mt-3 font-semibold">Treatment Recommendations</h4>
+                            <p class="mt-2 text-sm text-gray-600">Actionable treatment and prevention guidance.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <div class="text-2xl">👩🏽‍⚕️</div>
+                            <h4 class="mt-3 font-semibold">Vet Connection</h4>
+                            <p class="mt-2 text-sm text-gray-600">Connect with local vets for expert advice.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <div class="text-2xl">📱</div>
+                            <h4 class="mt-3 font-semibold">Mobile-first UI</h4>
+                            <p class="mt-2 text-sm text-gray-600">Easy-to-use web interface for all devices.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="how" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <h3 class="text-xl font-bold text-kukugreen">How It Works</h3>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 bg-white rounded-xl shadow text-center">
+                        <div class="text-3xl">📸</div>
+                        <h4 class="mt-3 font-semibold">Take a Photo</h4>
+                        <p class="mt-2 text-sm text-gray-600">Capture chicken droppings using your phone.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow text-center">
+                        <div class="text-3xl">⚙️</div>
+                        <h4 class="mt-3 font-semibold">Upload Image</h4>
+                        <p class="mt-2 text-sm text-gray-600">Our AI model analyzes it (98.27% accuracy).</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow text-center">
+                        <div class="text-3xl">📊</div>
+                        <h4 class="mt-3 font-semibold">Get Results</h4>
+                        <p class="mt-2 text-sm text-gray-600">Receive instant diagnosis, treatment tips, and vet connection.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="benefits" class="bg-gray-50 py-12" data-aos="fade-up">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h3 class="text-xl font-bold text-kukugreen">Product Benefits</h3>
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <h4 class="font-semibold">Reduce Losses</h4>
+                            <p class="text-sm text-gray-600 mt-2">Reduces poultry losses from 40% to less than 2%.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <h4 class="font-semibold">Save Money</h4>
+                            <p class="text-sm text-gray-600 mt-2">Saves farmers up to UGX 320,000 per 100 chickens.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <h4 class="font-semibold">Fast & Accurate</h4>
+                            <p class="text-sm text-gray-600 mt-2">Quick, affordable, and accurate disease detection.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow">
+                            <h4 class="font-semibold">Accessible</h4>
+                            <p class="text-sm text-gray-600 mt-2">Accessible anywhere, anytime via web.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pricing" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <h3 class="text-xl font-bold text-kukugreen">Pricing</h3>
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="p-6 bg-white rounded-xl shadow text-center">
+                        <div class="text-sm font-semibold text-gray-600">Free Trial</div>
+                        <div class="mt-4 text-2xl font-bold">Free</div>
+                        <div class="mt-4 text-sm text-gray-600">Basic trial for new users</div>
+                        <div class="mt-6"><a href="#contact" class="btn-primary px-4 py-2 rounded">Start Free</a></div>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow text-center border-2 border-kukugreen">
+                        <div class="text-sm font-semibold text-gray-600">Monthly</div>
+                        <div class="mt-4 text-2xl font-bold">UGX 20,000</div>
+                        <div class="mt-4 text-sm text-gray-600">Unlimited checks + vet support</div>
+                        <div class="mt-6"><a href="#contact" class="px-4 py-2 bg-kukugreen text-white rounded">Subscribe</a></div>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow text-center">
+                        <div class="text-sm font-semibold text-gray-600">Partner</div>
+                        <div class="mt-4 text-2xl font-bold">Custom</div>
+                        <div class="mt-4 text-sm text-gray-600">Plans for cooperatives or SACCOs</div>
+                        <div class="mt-6"><a href="#contact" class="px-4 py-2 border border-gray-300 rounded">Contact Sales</a></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="testimonials" class="bg-white py-12" data-aos="fade-up">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h3 class="text-xl font-bold text-kukugreen">Customer Stories</h3>
+                    <div class="mt-6 space-y-4">
+                        <blockquote class="p-6 bg-gray-50 rounded-lg">“KukuIntel helps me diagnose my chicken diseases easily and confidently, saving me from costly vet visits.” – <strong>Sarah, poultry farmer</strong></blockquote>
+                        <blockquote class="p-6 bg-gray-50 rounded-lg">“The vet feature helped me access expert treatment instantly.” – <strong>John, farmer</strong></blockquote>
+                        <blockquote class="p-6 bg-gray-50 rounded-lg">“KukuIntel has connected me to more clients needing medication and vaccines.” – <strong>Dr. Isaac, Veterinarian</strong></blockquote>
+                    </div>
+                </div>
+            </section>
+
+            <section id="partners" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+                <h3 class="text-xl font-bold text-kukugreen">Our Partners</h3>
+                <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-6 items-center">
+                    <div class="p-4 bg-white rounded shadow text-center">MIIC</div>
+                    <div class="p-4 bg-white rounded shadow text-center">Local Vets Network</div>
+                    <div class="p-4 bg-white rounded shadow text-center">AgriTech Uganda</div>
+                    <div class="p-4 bg-white rounded shadow text-center">Placeholder</div>
+                </div>
+            </section>
+
+            <section id="team" class="bg-gray-50 py-12" data-aos="fade-up">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h3 class="text-xl font-bold text-kukugreen">The Team</h3>
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="p-6 bg-white rounded-xl shadow text-center">
+                            <div class="h-24 w-24 mx-auto rounded-full bg-gray-200"></div>
+                            <div class="mt-3 font-semibold">Akanga Andrew</div>
+                            <div class="text-sm text-gray-600">Co-Founder, Software Engineer</div>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow text-center">
+                            <div class="h-24 w-24 mx-auto rounded-full bg-gray-200"></div>
+                            <div class="mt-3 font-semibold">Wanyana Selina Masembe</div>
+                            <div class="text-sm text-gray-600">Co-Founder, Software Engineer</div>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow text-center">
+                            <div class="h-24 w-24 mx-auto rounded-full bg-gray-200"></div>
+                            <div class="mt-3 font-semibold">Dr. Isaac Mugisha</div>
+                            <div class="text-sm text-gray-600">Veterinary Partner</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-aos="fade-up">
+                <h3 class="text-xl font-bold text-kukugreen">Contact Us</h3>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-white rounded-xl shadow">
+                        <h4 class="font-semibold">Get in touch</h4>
+                        <p class="mt-2 text-sm text-gray-600">Location: Makerere Innovation & Incubation Center, Kampala, Uganda</p>
+                        <p class="mt-2 text-sm text-gray-600">Phone: +256 7XX XXX XXX</p>
+                        <p class="mt-2 text-sm text-gray-600">Email: <a href="mailto:info@kukuintel.com" class="text-kukugreen">info@kukuintel.com</a></p>
+                        <div class="mt-4 flex gap-3">
+                            <a class="text-gray-600" href="#">Facebook</a>
+                            <a class="text-gray-600" href="#">X/Twitter</a>
+                            <a class="text-gray-600" href="#">LinkedIn</a>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow">
+                        <form action="mailto:info@kukuintel.com" method="post" enctype="text/plain" class="space-y-4">
+                            <input class="w-full border border-gray-200 rounded p-2" type="text" name="name" placeholder="Your name" required>
+                            <input class="w-full border border-gray-200 rounded p-2" type="email" name="email" placeholder="Your email" required>
+                            <textarea class="w-full border border-gray-200 rounded p-2" name="message" rows="4" placeholder="Message"></textarea>
+                            <div><button class="px-4 py-2 bg-kukugreen text-white rounded">Send Message</button></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <iframe class="w-full h-64 rounded-lg border" src="https://www.google.com/maps?q=Makerere+Innovation+Incubation+Center&output=embed"></iframe>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-white border-t border-gray-100 mt-12">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-600">© 2025 KukuIntel. Empowering Farmers Through AI.</div>
+        </footer>
+
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script src="js/landing.js"></script>
+    </body>
 </html>
